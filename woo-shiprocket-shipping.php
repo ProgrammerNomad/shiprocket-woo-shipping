@@ -1,5 +1,3 @@
-// woo-shiprocket-shipping.php
-
 <?php
 /**
  * Plugin Name: WooCommerce Shiprocket Shipping
@@ -17,4 +15,6 @@
 // Check if WooCommerce is active
 if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
     require_once plugin_dir_path( __FILE__ ) . 'includes/class-woo-shiprocket-shipping.php';
+    require_once plugin_dir_path( __FILE__ ) . 'includes/woo-shiprocket-shipping-pincode.php';
+    require_once plugin_dir_path( __FILE__ ) . 'includes/woo-shiprocket-shipping-rates.php'; // Include the new file
 }
