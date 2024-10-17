@@ -20,6 +20,7 @@ This plugin simplifies the shipping process for your WooCommerce store by provid
 * Quick delivery options and estimated delivery times.
 * Secure token generation and storage.
 * Customizable styles for cart and checkout pages.
+* Show only top rated 5 courier providers.
 
 **Installation:**
 
