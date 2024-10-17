@@ -42,7 +42,7 @@ function woo_shiprocket_shipping_init() {
 
 				// Save settings in admin if you have any defined
 				add_action( 'woocommerce_update_options_shipping_' . $this->id, array( $this, 'process_admin_options' ) );
-                add_filter( 'woocommerce_package_rates', array( $this, 'add_package_contents_weight' ), 10, 2 );
+               // add_filter( 'woocommerce_package_rates', array( $this, 'add_package_contents_weight' ), 10, 2 );
 			}
 
 			/**
@@ -138,7 +138,9 @@ function woo_shiprocket_shipping_init() {
 			 */
 			public function calculate_shipping( $package = array() ) {
                 $pincode = $package['destination']['postcode'];
-                $weight = .300; //$package['contents_weight'];
+                $weight = WC()->cart->get_cart_contents_weight(); 
+
+				$total_weight = WC()->cart->get_cart_contents_weight();
 
                 // Make API call to Shiprocket to get rates for the pincode and weight
                 $rates = woo_shiprocket_get_rates( $pincode, $weight ); // This function will be in the new file
@@ -156,27 +158,7 @@ function woo_shiprocket_shipping_init() {
                     wc_add_notice( __( 'No shipping rates found for your pincode.', 'woo-shiprocket-shipping' ), 'error' );
                 }
 			}
-
-            /**
-             * Add package contents weight to the package data.
-             *
-             * @param array  $rates    Shipping rates.
-             * @param array  $package Package data.
-             *
-             * @return array Modified shipping rates.
-             */
-            public function add_package_contents_weight( $rates, $package ) {
-                // Calculate the total weight of the package contents
-                $weight = 0;
-                foreach ( $package['contents'] as $item ) {
-                    $weight += $item['data']->get_weight() * $item['quantity'];
-                }
-
-                // Add the 'contents_weight' key to the $package array
-                $package['contents_weight'] = $weight;
-
-                return $rates;
-            }
+           
 		} // end class WC_Shiprocket_Shipping_Method
 	}
 }
