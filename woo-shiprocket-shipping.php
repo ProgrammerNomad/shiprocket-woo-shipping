@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: WooCommerce Shiprocket Shipping
- * Plugin URI:  (Your Plugin URI)
+ * Plugin URI:  https://github.com/ProgrammerNomad/woo-shiprocket-shipping
  * Description: Integrate Shiprocket shipping rates into your WooCommerce store.
  * Version:     1.0.0
  * Author:      Shiv Singh
- * Author URI:  (Your Website)
+ * Author URI:  https://github.com/ProgrammerNomad/
  * Text Domain: woo-shiprocket-shipping
  * Domain Path: /languages
  *
