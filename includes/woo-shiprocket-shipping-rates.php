@@ -5,8 +5,8 @@
  * @package woo-shiprocket-shipping
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+if (!defined('ABSPATH')) {
+    exit;
 }
 
 /**
@@ -17,12 +17,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return array Shipping rates.
  */
-function woo_shiprocket_get_rates( $pincode, $weight, $Dimensions, $total_amount ) {
+function woo_shiprocket_get_rates($pincode, $weight, $Dimensions, $total_amount)
+{
     // Get the Shiprocket token from settings
-    $settings = get_option( 'woocommerce_woo_shiprocket_shipping_settings' );
-    $token = isset( $settings['token'] ) ? $settings['token'] : '';
+    $settings = get_option('woocommerce_woo_shiprocket_shipping_settings');
+    $token = isset($settings['token']) ? $settings['token'] : '';
 
-    if ( ! $token ) {
+    if (!$token) {
         return array(); // Or handle the error appropriately
     }
 
@@ -30,7 +31,7 @@ function woo_shiprocket_get_rates( $pincode, $weight, $Dimensions, $total_amount
     $endpoint_url = 'https://apiv2.shiprocket.in/v1/courier/ratingserviceability';
 
     // Get the store's postcode from WooCommerce settings
-    $pickup_postcode = get_option( 'woocommerce_store_postcode' );
+    $pickup_postcode = get_option('woocommerce_store_postcode');
 
     // Shipping data 
     $cod = '0';
@@ -75,21 +76,27 @@ function woo_shiprocket_get_rates( $pincode, $weight, $Dimensions, $total_amount
     );
 
     // Make the API request
-    $response = wp_remote_get( $full_url, $args );
+    $response = wp_remote_get($full_url, $args);
 
-    if ( is_wp_error( $response ) ) {
+    if (is_wp_error($response)) {
         return array(); // Or handle the error appropriately
     }
 
-    $body = json_decode( wp_remote_retrieve_body( $response ) );
+    $body = json_decode(wp_remote_retrieve_body($response));
 
     // Process the API response and extract rates
     $rates = array();
-    if ( isset( $body->status ) && $body->status == 200 && isset( $body->data->available_courier_companies ) ) {
-        foreach ( $body->data->available_courier_companies as $company ) {
+    if (isset($body->status) && $body->status == 200 && isset($body->data->available_courier_companies)) {
+
+        // Set Index for the array according to estimated_delivery_days
+        $companies = $body->data->available_courier_companies;
+
+        //$companies = sort_companies_by_delivery( $companies );
+
+        foreach ($companies as $company) {
             // Assuming the API response includes rate information (e.g., `company->rate`)
             $rates[] = array(
-                'id'   => sanitize_title( $company->courier_name ),
+                'id' => sanitize_title($company->courier_name),
                 'name' => $company->courier_name,
                 'cost' => $company->rate, // Replace with the actual rate field from the API response
             );

@@ -79,6 +79,12 @@ function woo_shiprocket_shipping_init() {
 						'label'       => __( 'Enable pincode serviceability check on product pages', 'woo-shiprocket-shipping' ),
 						'default'     => 'no',
 					),
+					'show_top_courier' => array(
+						'title'       => __( 'Show Top Courier', 'woo-shiprocket-shipping' ),
+						'type'        => 'checkbox',
+						'label'       => __( 'Show only top rated 5 courier providers.', 'woo-shiprocket-shipping' ),
+						'default'     => 'yes',
+					),
 				);
 			}
 
