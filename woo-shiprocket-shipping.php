@@ -1,3 +1,5 @@
+// woo-shiprocket-shipping.php
+
 <?php
 /**
  * Plugin Name: WooCommerce Shiprocket Shipping
@@ -12,37 +14,7 @@
  * @package woo-shiprocket-shipping
  */
 
-// If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ) {
-	die;
+// Check if WooCommerce is active
+if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
+    require_once plugin_dir_path( __FILE__ ) . 'includes/class-woo-shiprocket-shipping.php';
 }
-
-// Include the main class.
-require_once plugin_dir_path( __FILE__ ) . 'includes/class-woo-shiprocket-shipping-method.php';
-
-/**
- * Initialize the plugin.
- *
- * @return void
- */
-function woo_shiprocket_shipping_init() {
-	if ( ! class_exists( 'WC_Shipping_Method' ) ) {
-		return;
-	}
-
-	new Woo_Shiprocket_Shipping_Method();
-}
-add_action( 'woocommerce_shipping_init', 'woo_shiprocket_shipping_init' );
-
-/**
- * Add the shipping method to WooCommerce.
- *
- * @param array $methods Existing shipping methods.
- *
- * @return array Modified shipping methods.
- */
-function woo_shiprocket_shipping_add_method( $methods ) {
-	$methods['woo_shiprocket_shipping'] = 'Woo_Shiprocket_Shipping_Method';
-	return $methods;
-}
-add_filter( 'woocommerce_shipping_methods', 'woo_shiprocket_shipping_add_method' );
