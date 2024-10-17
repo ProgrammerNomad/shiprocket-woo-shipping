@@ -88,20 +88,86 @@ function woo_shiprocket_get_rates($pincode, $weight, $Dimensions, $total_amount)
     $rates = array();
     if (isset($body->status) && $body->status == 200 && isset($body->data->available_courier_companies)) {
 
-        // Set Index for the array according to estimated_delivery_days
         $companies = $body->data->available_courier_companies;
+        $companies = objectToArray($companies);
 
-        //$companies = sort_companies_by_delivery( $companies );
+        uasort($companies, function ($a, $b) {
+            return $a['estimated_delivery_days'] <=> $b['estimated_delivery_days'];
+        });
+
+        // echo '<pre>';
+        // print_r($companies);
+
+        // die();
+
+        if (!isset($settings['show_top_courier']) || $settings['show_top_courier'] !== 'yes') {
+
+            // Show all companies
+            $companies = $companies;
+
+        } else {
+
+            // Show only top 5 rated quick delivery and 5 nomal delivery companies
+
+            $QuicklyDeliveries = [];
+            $NormalDeliveries = [];
+            foreach ($companies as $company) {
+
+                if ($company['estimated_delivery_days'] <= 1) {
+                    $QuicklyDeliveries[] = $company;
+                } else {
+                    $NormalDeliveries[] = $company;
+                }
+
+            }
+
+            // now sort QuicklyDeliveries top 5 quickly delivery companies accoring to delivery_performance and get top 5
+
+            usort($QuicklyDeliveries, function ($a, $b) {
+                return $a['delivery_performance'] <=> $b['delivery_performance'];
+            });
+
+            $QuicklyDeliveries = array_slice($QuicklyDeliveries, 0, 5);
+
+            // now sort NormalDeliveries top 5 normal delivery companies accoring to delivery_performance and get top 5
+
+            usort($NormalDeliveries, function ($a, $b) {
+                return $a['delivery_performance'] <=> $b['delivery_performance'];
+            });
+
+            $NormalDeliveries = array_slice($NormalDeliveries, 0, 5);
+
+            $companies = array_merge($QuicklyDeliveries, $NormalDeliveries);
+
+        }
 
         foreach ($companies as $company) {
             // Assuming the API response includes rate information (e.g., `company->rate`)
             $rates[] = array(
-                'id' => sanitize_title($company->courier_name),
-                'name' => $company->courier_name,
-                'cost' => $company->rate, // Replace with the actual rate field from the API response
+                'id' => sanitize_title($company['courier_name']),
+                'name' => $company['courier_name'],
+                'cost' => $company['rate'], // Replace with the actual rate field from the API response
             );
         }
     }
 
     return $rates;
+}
+
+function objectToArray($obj)
+{
+    if (is_object($obj)) {
+        $obj = (array) $obj;
+    }
+
+    if (is_array($obj)) {
+        $new = array();
+        foreach ($obj as $key => $val) {
+            $new[$key] = objectToArray($val);
+        }
+    } else {
+        $new = $obj;
+    }
+
+    return $new;
 }
