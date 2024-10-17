@@ -27,7 +27,7 @@ function show_shiprocket_pincode_check()
 		return; // Exit if the option is not enabled
 	}
 	?>
-	<div>
+	<div id="pincode_check_form">
 		<input type="text" id="shiprocket_pincode_check" name="shiprocket_pincode_check" value=""
 			placeholder="Enter Pincode">
 
