@@ -139,11 +139,11 @@ function woo_shiprocket_shipping_init() {
 			public function calculate_shipping( $package = array() ) {
                 $pincode = $package['destination']['postcode'];
                 $weight = WC()->cart->get_cart_contents_weight(); 
-
-				$total_weight = WC()->cart->get_cart_contents_weight();
+				$Dimensions = $this->GetLengthBreadthHeight($package);
+				$total_amount = WC()->cart->get_cart_contents_total();
 
                 // Make API call to Shiprocket to get rates for the pincode and weight
-                $rates = woo_shiprocket_get_rates( $pincode, $weight ); // This function will be in the new file
+                $rates = woo_shiprocket_get_rates( $pincode, $weight, $Dimensions, $total_amount ); // This function will be in the new file
 
                 if ( ! empty( $rates ) ) {
                     foreach ( $rates as $rate ) {
@@ -157,6 +157,21 @@ function woo_shiprocket_shipping_init() {
                     // If no rates are found, display an error message
                     wc_add_notice( __( 'No shipping rates found for your pincode.', 'woo-shiprocket-shipping' ), 'error' );
                 }
+			}
+
+			public function GetLengthBreadthHeight ($package = array())
+			{
+				$length = 0;
+				$breadth = 0;
+				$height = 0;
+				foreach ($package['contents'] as $item_id => $values) {
+					$_product = $values['data'];
+					$length += $_product->get_length() * $values['quantity'];
+					$breadth += $_product->get_width() * $values['quantity'];
+					$height += $_product->get_height() * $values['quantity'];
+				}
+				return array('length' => $length, 'breadth' => $breadth, 'height' => $height);
+
 			}
            
 		} // end class WC_Shiprocket_Shipping_Method

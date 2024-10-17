@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return array Shipping rates.
  */
-function woo_shiprocket_get_rates( $pincode, $weight ) {
+function woo_shiprocket_get_rates( $pincode, $weight, $Dimensions, $total_amount ) {
     // Get the Shiprocket token from settings
     $settings = get_option( 'woocommerce_woo_shiprocket_shipping_settings' );
     $token = isset( $settings['token'] ) ? $settings['token'] : '';
@@ -34,7 +34,7 @@ function woo_shiprocket_get_rates( $pincode, $weight ) {
 
     // Shipping data 
     $cod = '0';
-    $declared_value = '200';
+    $declared_value = $total_amount;
     $rate_calculator = '1';
     $blocked = '1';
     $is_return = '0';
