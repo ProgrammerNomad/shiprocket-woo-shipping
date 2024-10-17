@@ -142,10 +142,18 @@ function woo_shiprocket_get_rates($pincode, $weight, $Dimensions, $total_amount)
         }
 
         foreach ($companies as $company) {
-            // Assuming the API response includes rate information (e.g., `company->rate`)
+
+            if ($company['estimated_delivery_days'] <= 1) {
+
+                $PostFixText = 'Same-Day Delivery';
+
+            } else {
+                $PostFixText = $company['estimated_delivery_days'] . ' days delivery';
+            }
+
             $rates[] = array(
                 'id' => sanitize_title($company['courier_name']),
-                'name' => $company['courier_name'],
+                'name' => $company['courier_name'].' - '.$PostFixText,
                 'cost' => $company['rate'], // Replace with the actual rate field from the API response
             );
         }
