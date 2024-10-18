@@ -1,4 +1,3 @@
-```
 === Shiprocket Woo Shipping ===
 Contributors: Shiv Singh
 Donate link: https://github.com/ProgrammerNomad
@@ -64,4 +63,3 @@ Contributions are welcome! Feel free to fork the [repository](https://github.com
 == Changelog ==
 
 * 1.0.0: Initial release.
-```
