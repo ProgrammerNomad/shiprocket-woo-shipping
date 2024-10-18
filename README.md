@@ -32,4 +32,4 @@ This plugin simplifies the shipping process for your WooCommerce store by provid
 
 **GitHub Repository:**
 
-[https://github.com/ProgrammerNomad/woo-shiprocket-shipping](https://github.com/ProgrammerNomad/woo-shiprocket-shipping)
+[https://github.com/ProgrammerNomad/shiprocket-woo-shipping](https://github.com/ProgrammerNomad/shiprocket-woo-shipping)

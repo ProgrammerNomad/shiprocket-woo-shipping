@@ -2,7 +2,7 @@
 /**
  * Shiprocket Shipping Rates
  *
- * @package woo-shiprocket-shipping
+ * @package shiprocket-woo-shipping
  */
 
 if (!defined('ABSPATH')) {

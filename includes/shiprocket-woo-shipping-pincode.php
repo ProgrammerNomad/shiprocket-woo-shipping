@@ -2,7 +2,7 @@
 /**
  * Shiprocket Pincode Check
  *
- * @package woo-shiprocket-shipping
+ * @package shiprocket-woo-shipping
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -96,12 +96,12 @@ function shiprocket_pincode_check_ajax_handler() {
 	$product_id = isset( $_POST['product_id'] ) ? intval( $_POST['product_id'] ) : 0; 
 
 	if ( ! $product_id ) {
-		wp_send_json_error( array( 'message' => __( 'Invalid product ID.', 'woo-shiprocket-shipping' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Invalid product ID.', 'shiprocket-woo-shipping' ) ) );
 	}
 
 	$product = wc_get_product( $product_id );
 	if ( ! $product ) {
-		wp_send_json_error( array( 'message' => __( 'Product not found.', 'woo-shiprocket-shipping' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Product not found.', 'shiprocket-woo-shipping' ) ) );
 	}
 
 	$weight = floatval( $product->get_weight() ); // Get the product weight
@@ -111,7 +111,7 @@ function shiprocket_pincode_check_ajax_handler() {
 	$token = isset( $settings['token'] ) ? $settings['token'] : '';
 
 	if ( ! $token ) {
-		wp_send_json_error( array( 'message' => __( 'Shiprocket token not found.', 'woo-shiprocket-shipping' ) ) );
+		wp_send_json_error( array( 'message' => __( 'Shiprocket token not found.', 'shiprocket-woo-shipping' ) ) );
 	}
 
     // Shiprocket API endpoint URL

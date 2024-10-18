@@ -41,7 +41,7 @@ This plugin simplifies shipping for your WooCommerce store by integrating with S
 
 == Installation ==
 
-1. Upload the `woo-shiprocket-shipping` folder to the `/wp-content/plugins/` directory.
+1. Upload the `shiprocket-woo-shipping` folder to the `/wp-content/plugins/` directory.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 3. Configure the plugin settings (WooCommerce > Settings > Shipping > Shiprocket) by entering your Shiprocket email and password.
 
@@ -55,11 +55,11 @@ If a customer's pincode is not serviceable, they will see a message indicating t
 
 == Support ==
 
-If you have any questions or need assistance, please [open an issue on GitHub](https://github.com/ProgrammerNomad/woo-shiprocket-shipping/issues).
+If you have any questions or need assistance, please [open an issue on GitHub](https://github.com/ProgrammerNomad/shiprocket-woo-shipping/issues).
 
 == Contributing ==
 
-Contributions are welcome! Feel free to fork the [repository](https://github.com/ProgrammerNomad/woo-shiprocket-shipping) and submit pull requests.
+Contributions are welcome! Feel free to fork the [repository](https://github.com/ProgrammerNomad/shiprocket-woo-shipping) and submit pull requests.
 
 == Changelog ==
 

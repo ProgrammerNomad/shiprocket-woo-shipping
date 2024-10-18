@@ -2,7 +2,7 @@
 /**
  * Shiprocket Shipping Method
  *
- * @package woo-shiprocket-shipping
+ * @package shiprocket-woo-shipping
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -20,8 +20,8 @@ function woo_shiprocket_shipping_init() {
 			 */
 			public function __construct() {
 				$this->id                 = 'woo_shiprocket_shipping'; 
-				$this->method_title       = __( 'Shiprocket Shipping Method', 'woo-shiprocket-shipping' ); 
-				$this->method_description = __( 'Get live rates and ship with Shiprocket.', 'woo-shiprocket-shipping' ); 
+				$this->method_title       = __( 'Shiprocket Shipping Method', 'shiprocket-woo-shipping' ); 
+				$this->method_description = __( 'Get live rates and ship with Shiprocket.', 'shiprocket-woo-shipping' ); 
 
 				$this->enabled            = "yes"; 
 				$this->title              = "Shiprocket"; 
@@ -53,36 +53,36 @@ function woo_shiprocket_shipping_init() {
 			public function init_form_fields() {
 				$this->form_fields = array(
 					'email' => array(
-						'title'       => __( 'Shiprocket Email', 'woo-shiprocket-shipping' ),
+						'title'       => __( 'Shiprocket Email', 'shiprocket-woo-shipping' ),
 						'type'        => 'text',
-						'description' => __( 'Enter your Shiprocket Email.', 'woo-shiprocket-shipping' ),
+						'description' => __( 'Enter your Shiprocket Email.', 'shiprocket-woo-shipping' ),
 						'default'     => '',
 					),
 					'password' => array(
-						'title'       => __( 'Shiprocket Password', 'woo-shiprocket-shipping' ),
+						'title'       => __( 'Shiprocket Password', 'shiprocket-woo-shipping' ),
 						'type'        => 'password',
-						'description' => __( 'Enter your Shiprocket Password.', 'woo-shiprocket-shipping' ),
+						'description' => __( 'Enter your Shiprocket Password.', 'shiprocket-woo-shipping' ),
 						'default'     => '',
 					),
 					'token' => array(
-						'title'       => __( 'Shiprocket Token', 'woo-shiprocket-shipping' ),
+						'title'       => __( 'Shiprocket Token', 'shiprocket-woo-shipping' ),
 						'type'        => 'textarea',
-						'description' => __( 'Shiprocket Token (generated on save)', 'woo-shiprocket-shipping' ),
+						'description' => __( 'Shiprocket Token (generated on save)', 'shiprocket-woo-shipping' ),
 						'default'     => '',
 						'custom_attributes' => array(
 							'readonly' => 'readonly'
 						),
 					),
 					'show_pincode_check' => array(
-						'title'       => __( 'Show Pincode Check', 'woo-shiprocket-shipping' ),
+						'title'       => __( 'Show Pincode Check', 'shiprocket-woo-shipping' ),
 						'type'        => 'checkbox',
-						'label'       => __( 'Enable pincode serviceability check on product pages', 'woo-shiprocket-shipping' ),
+						'label'       => __( 'Enable pincode serviceability check on product pages', 'shiprocket-woo-shipping' ),
 						'default'     => 'no',
 					),
 					'show_top_courier' => array(
-						'title'       => __( 'Show Top Courier', 'woo-shiprocket-shipping' ),
+						'title'       => __( 'Show Top Courier', 'shiprocket-woo-shipping' ),
 						'type'        => 'checkbox',
-						'label'       => __( 'Show only top rated 5 courier providers.', 'woo-shiprocket-shipping' ),
+						'label'       => __( 'Show only top rated 5 courier providers.', 'shiprocket-woo-shipping' ),
 						'default'     => 'yes',
 					),
 				);
@@ -109,7 +109,7 @@ function woo_shiprocket_shipping_init() {
 
 				if ( is_wp_error( $response ) ) {
 					// Handle API error (e.g., display a notice)
-					WC_Admin_Settings::add_error( sprintf( __( 'Shiprocket API Error: %s', 'woo-shiprocket-shipping' ), $response->get_error_message() ) );
+					WC_Admin_Settings::add_error( sprintf( __( 'Shiprocket API Error: %s', 'shiprocket-woo-shipping' ), $response->get_error_message() ) );
 					return false;
 				}
 
@@ -118,11 +118,11 @@ function woo_shiprocket_shipping_init() {
 
 				// Check if the status code is 403 (Forbidden)
 				if ( $code == 403 ) {
-					$error_message = __( 'Invalid Shiprocket email or password.', 'woo-shiprocket-shipping' );
+					$error_message = __( 'Invalid Shiprocket email or password.', 'shiprocket-woo-shipping' );
 					WC_Admin_Settings::add_error( $error_message );
 					return false; 
 				} else if ( ! isset( $body->token ) ) { // Check for other token generation errors
-					$error_message = __( 'Failed to generate Shiprocket token.', 'woo-shiprocket-shipping' );
+					$error_message = __( 'Failed to generate Shiprocket token.', 'shiprocket-woo-shipping' );
 					WC_Admin_Settings::add_error( $error_message );
 					return false; 
 				}
@@ -161,7 +161,7 @@ function woo_shiprocket_shipping_init() {
                     }
                 } else {
                     // If no rates are found, display an error message
-                    wc_add_notice( __( 'No shipping rates found for your pincode.', 'woo-shiprocket-shipping' ), 'error' );
+                    wc_add_notice( __( 'No shipping rates found for your pincode.', 'shiprocket-woo-shipping' ), 'error' );
                 }
 			}
 
@@ -197,10 +197,10 @@ add_filter( 'woocommerce_shipping_methods', 'add_woo_shiprocket_shipping_method'
  * Enqueue JavaScript for AJAX call.
  */
 function woo_shiprocket_shipping_enqueue_scripts() {
-    wp_enqueue_script( 'woo-shiprocket-shipping-ajax', plugins_url( '../js/woo-shiprocket-shipping.js', __FILE__ ), array( 'jquery' ), '1.0.0', true );
-    wp_localize_script( 'woo-shiprocket-shipping-ajax', 'woo_shiprocket_shipping_params', array(
+    wp_enqueue_script( 'shiprocket-woo-shipping-ajax', plugins_url( '../js/shiprocket-woo-shipping.js', __FILE__ ), array( 'jquery' ), '1.0.0', true );
+    wp_localize_script( 'shiprocket-woo-shipping-ajax', 'woo_shiprocket_shipping_params', array(
         'ajax_url' => admin_url( 'admin-ajax.php' ),
-        'nonce'    => wp_create_nonce( 'woo-shiprocket-shipping-nonce' ),
+        'nonce'    => wp_create_nonce( 'shiprocket-woo-shipping-nonce' ),
     ) );
 }
 add_action( 'wp_enqueue_scripts', 'woo_shiprocket_shipping_enqueue_scripts' ); // Enqueue on frontend
@@ -225,7 +225,7 @@ add_action( 'wp_ajax_nopriv_woo_shiprocket_update_shipping_methods', 'woo_shipro
  * @return void
  */
 function woo_shiprocket_update_shipping_methods() {
-    check_ajax_referer( 'woo-shiprocket-shipping-nonce', 'nonce' );
+    check_ajax_referer( 'shiprocket-woo-shipping-nonce', 'nonce' );
 
     $pincode = sanitize_text_field( $_POST['pincode'] );
 
