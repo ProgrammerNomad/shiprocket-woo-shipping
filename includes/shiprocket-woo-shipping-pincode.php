@@ -57,7 +57,6 @@ function show_shiprocket_pincode_check()
                     type: 'POST',
                     data: data,
                     success: function (response) {
-                       // response = $($.parseHTML(response));
 
                         var tempDiv = document.createElement('div');
                         tempDiv.innerHTML = response; // htmlString is the response from the AJAX request
