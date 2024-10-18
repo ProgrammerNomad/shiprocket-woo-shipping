@@ -44,12 +44,12 @@ function show_shiprocket_pincode_check()
 				// Set the pincode in localStorage
 				localStorage.setItem('shiprocket_pincode', pincode); 
 
-				ajaxurl = '<?php echo admin_url('admin-ajax.php') ?>'; // Get AJAX URL
+				ajaxurl = '<?php echo esc_url( admin_url('admin-ajax.php') ); ?>'; // Get AJAX URL
 
 				var data = {
 					'action': 'frontend_action_without_file', 
 					'delivery_postcode': pincode, 
-					'product_id': <?php echo $product->get_id(); ?>, 
+					'product_id': <?php echo esc_url($product->get_id()); ?>, 
 				};
 
 				jQuery.ajax({
@@ -178,7 +178,7 @@ function shiprocket_pincode_check_ajax_handler() {
         $ShowOutput = '';
 
         if (empty($available_courier_companies)) {
-            $ShowOutput = '<p style="font-weight: bold; padding: 10px 0px 0px 0px;" >No courier companies available for your pincode.</p>';
+            $ShowOutput = '<p style="font-weight: bold; padding: 10px 0px 0px 0px;" >' . esc_html__( 'No courier companies available for your pincode.', 'woo-shiprocket-shipping' ) . '</p>';
         } else {
             $QuickCouriers = array('Quick-Ola', 'Quick-Borzo', 'Quick-Flash', 'Quick-Qwqer', 'Quick-Mover', 'Quick-Porter', 'Loadshare Hyperlocal');
             foreach ($available_courier_companies as $company) {
@@ -192,7 +192,7 @@ function shiprocket_pincode_check_ajax_handler() {
 
             }
             if ($QuickDelivery) {
-                $ShowOutput = '<p style="font-weight: bold; padding: 10px 0px 0px 0px;">Don\'t wait! Order now and get it delivered to your doorstep within the next 2 hours.</p>';
+                $ShowOutput = '<p style="font-weight: bold; padding: 10px 0px 0px 0px;">' . esc_html__( 'Don\'t wait! Order now and get it delivered to your doorstep within the next 2 hours.', 'woo-shiprocket-shipping' ) . '</p>';
             } else {
                 // Remove items with empty or zero estimated_delivery_days
                 $filteredItems = array_filter($available_courier_companies, function ($item) {
@@ -202,7 +202,7 @@ function shiprocket_pincode_check_ajax_handler() {
                 // Reset array keys after filtering
                 $filteredItems = array_values($filteredItems);
 
-                $ShowOutput = '<p style="font-weight: bold; padding: 10px 0px 0px 0px;">Fast delivery to ' . $filteredItems[0]['city'] . '! Your order arrives in just ' . $filteredItems[0]['estimated_delivery_days'] . ' days with our expedited shipping.</p>';
+                $ShowOutput = '<p style="font-weight: bold; padding: 10px 0px 0px 0px;">' . sprintf( esc_html__( 'Fast delivery to %s! Your order arrives in just %d days with our expedited shipping.', 'woo-shiprocket-shipping' ), esc_html( $filteredItems[0]['city'] ), esc_html( $filteredItems[0]['estimated_delivery_days'] ) ) . '</p>';
             }
         }
 
