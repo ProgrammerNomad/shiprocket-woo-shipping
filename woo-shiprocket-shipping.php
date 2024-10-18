@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Woo Shiprocket Shipping
+ * Plugin Name: Shiprocket Woo Shipping
  * Plugin URI:  https://github.com/ProgrammerNomad/woo-shiprocket-shipping
  * Description: Integrate Shiprocket shipping rates into your WooCommerce store.
  * Version:     1.0.0
