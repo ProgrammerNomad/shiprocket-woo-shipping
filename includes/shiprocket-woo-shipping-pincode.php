@@ -49,7 +49,7 @@ function show_shiprocket_pincode_check()
                 var data = {
                     'action': 'frontend_action_without_file',
                     'delivery_postcode': pincode,
-                    'product_id': <?php echo esc_url($product->get_id()); ?>,
+                    'product_id': <?php echo esc_html($product->get_id()); ?>,
                 };
 
                 jQuery.ajax({
@@ -57,6 +57,7 @@ function show_shiprocket_pincode_check()
                     type: 'POST',
                     data: data,
                     success: function (response) {
+                        response = $($.parseHTML(response));
                         jQuery('#pincode_response').html(response); // Display the response
                         // Set the response message in localStorage
                         localStorage.setItem('shiprocket_pincode_response', response);
