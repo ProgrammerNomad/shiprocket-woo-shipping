@@ -8,7 +8,7 @@
  * Author URI:  https://github.com/ProgrammerNomad/
  * Text Domain: shiprocket-woo-shipping
  * Domain Path: /languages
- *
+ * License:     GPL v3
  * @package shiprocket-woo-shipping
  */
 

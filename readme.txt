@@ -1,19 +1,21 @@
 === Shiprocket Woo Shipping ===
 Contributors: Shiv Singh
 Donate link: https://github.com/ProgrammerNomad
-Tags: woocommerce, shipping, shiprocket, india, rates, pincode, serviceability, ecommerce
+Tags: shipping, shiprocket, pincode, serviceability
 Requires at least: 5.0
-Tested up to: 6.3
+Tested up to: 6.6
 Requires PHP: 7.0
 Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Seamlessly integrate your WooCommerce store with Shiprocket for real-time shipping rates, pincode serviceability checks, and a streamlined checkout experience.
+Seamlessly integrate your WooCommerce store with Shiprocket for real-time shipping rates, pincode serviceability checks.
 
 == Description ==
 
 This plugin simplifies shipping for your WooCommerce store by integrating with Shiprocket, India's leading shipping solution. It provides accurate shipping rates, pincode serviceability checks, and a smooth checkout experience for your customers.
+
+Supercharge your WooCommerce store with Shiprocket! Get real-time shipping rates calculated at checkout, instantly check serviceability to any pincode, and offer a smooth, hassle-free checkout experience for your customers. Streamline your shipping process and boost conversions with this powerful integration.
 
 **Key Features:**
 
