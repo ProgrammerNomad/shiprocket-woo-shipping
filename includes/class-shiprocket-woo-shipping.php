@@ -101,7 +101,7 @@ function woo_shiprocket_shipping_init() {
 				// Make API call to Shiprocket to generate token with raw JSON body
 				$response = wp_remote_post( 'https://apiv2.shiprocket.in/v1/external/auth/login', array(
 					'headers' => array( 'Content-Type' => 'application/json' ), // Set Content-Type header
-					'body'    => json_encode( array( // Encode body as JSON string
+					'body'    => wp_json_encode( array( // Encode body as JSON string
 						'email'    => $email,
 						'password' => $password,
 					) ),
@@ -210,7 +210,7 @@ add_action( 'wp_enqueue_scripts', 'woo_shiprocket_shipping_enqueue_scripts' ); /
  */
 function woo_shiprocket_enqueue_custom_css() {
     if ( is_cart() || is_checkout() ) {
-        wp_enqueue_style( 'woo-shiprocket-custom-css', plugins_url( '../css/woo-shiprocket-custom.css', __FILE__ ) );
+        wp_enqueue_style( 'woo-shiprocket-custom-css', plugins_url( '../css/woo-shiprocket-custom.css', __FILE__ ), array(), '1.0.0' );
     }
 }
 add_action( 'wp_enqueue_scripts', 'woo_shiprocket_enqueue_custom_css' );
