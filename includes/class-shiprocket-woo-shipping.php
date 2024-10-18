@@ -109,6 +109,7 @@ function woo_shiprocket_shipping_init() {
 
 				if ( is_wp_error( $response ) ) {
 					// Handle API error (e.g., display a notice)
+					/* translators: %s: The error message from the Shiprocket API. */
 					WC_Admin_Settings::add_error( sprintf( __( 'Shiprocket API Error: %s', 'shiprocket-woo-shipping' ), $response->get_error_message() ) );
 					return false;
 				}
