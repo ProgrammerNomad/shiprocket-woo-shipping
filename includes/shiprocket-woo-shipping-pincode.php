@@ -204,12 +204,13 @@ function shiprocket_pincode_check_ajax_handler()
                 $filteredItems = array_values($filteredItems);
 
                 /* translators: %1$s: City name, %2$d: Number of days for delivery. */
-                $ShowOutput = '<p style="font-weight: bold; padding: 10px 0px 0px 0px;">' . sprintf(esc_html__('Fast delivery to %1$s! Your order arrives in just %2$d days with our expedited shipping.', 'woo-shiprocket-shipping'), esc_html($filteredItems[0]['city']), esc_html($filteredItems[0]['estimated_delivery_days'])) . '</p>';
+                $ShowOutput = '<p style="font-weight: bold; padding: 10px 0px 0px 0px;">' . sprintf(esc_html__('Fast delivery to %1$s! Your order arrives in just %2$d days with our expedited shipping.', 'shiprocket-woo-shipping'), esc_html($filteredItems[0]['city']), esc_html($filteredItems[0]['estimated_delivery_days'])) . '</p>';
             }
         }
 
 
-        echo $ShowOutput;
+        // Escape the $ShowOutput variable before echoing
+        echo esc_html($ShowOutput);
     }
 
 
