@@ -1,5 +1,5 @@
 ```
-=== WooCommerce Shiprocket Shipping ===
+=== Shiprocket Woo Shipping ===
 Contributors: Shiv Singh
 Donate link: https://github.com/ProgrammerNomad
 Tags: woocommerce, shipping, shiprocket, india, rates, pincode, serviceability, ecommerce

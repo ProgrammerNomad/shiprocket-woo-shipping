@@ -1,4 +1,4 @@
-**WooCommerce Shiprocket Shipping Plugin**
+**Shiprocket Woo Shipping Plugin**
 
 This plugin seamlessly integrates your WooCommerce store with Shiprocket, India's leading shipping solution. It allows you to:
 
