@@ -57,7 +57,13 @@ function show_shiprocket_pincode_check()
                     type: 'POST',
                     data: data,
                     success: function (response) {
-                        response = $($.parseHTML(response));
+                       // response = $($.parseHTML(response));
+
+                        var tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = response; // htmlString is the response from the AJAX request
+
+                        response = tempDiv.textContent || tempDiv.innerText;
+
                         jQuery('#pincode_response').html(response); // Display the response
                         // Set the response message in localStorage
                         localStorage.setItem('shiprocket_pincode_response', response);
