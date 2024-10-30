@@ -25,8 +25,8 @@ jobs:
           # Construct the download URL (replace with your actual URL format)
           download_url="https://github.com/ProgrammerNomad/shiprocket-woo-shipping/releases/download/$version/shiprocket-woo-shipping.zip" 
 
-          console.log("Version: ", version);
-          console.log("Download url: ", download_url);
+          console.log("Version: "+ version);
+          console.log("Download url: "+ download_url);
           
           # Create the JSON content for update-info.json
           cat << EOF > ./update-info.json
