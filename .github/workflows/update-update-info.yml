@@ -19,11 +19,11 @@ jobs:
 
       - name: Update update-info.json
         run: |
-          # Fetch the latest version from woo-shiprocket-shipping.php
-          version=$(grep 'Version:' ./woo-shiprocket-shipping/woo-shiprocket-shipping.php | cut -d ':' -f 2 | tr -d ' ')
+          # Fetch the latest version from shiprocket-woo-shipping.php
+          version=$(grep 'Version:' ./shiprocket-woo-shipping/shiprocket-woo-shipping.php | cut -d ':' -f 2 | tr -d ' ')
           
           # Construct the download URL (replace with your actual URL format)
-          download_url="https://github.com/ProgrammerNomad/woo-shiprocket-shipping/releases/download/$version/woo-shiprocket-shipping.zip" 
+          download_url="https://github.com/ProgrammerNomad/shiprocket-woo-shipping/releases/download/$version/shiprocket-woo-shipping.zip" 
 
           console.log("Version: ", version);
           console.log("Download url: ", download_url);

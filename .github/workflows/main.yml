@@ -15,7 +15,7 @@ jobs:
       - name: Get the version
         id: get_version
         run: |
-          echo "version=$(grep 'Version:' ./woo-shiprocket-shipping/woo-shiprocket-shipping.php | cut -d ':' -f 2 | tr -d ' ')" >> $GITHUB_OUTPUT
+          echo "version=$(grep 'Version:' ./shiprocket-woo-shipping/shiprocket-woo-shipping.php | cut -d ':' -f 2 | tr -d ' ')" >> $GITHUB_OUTPUT
 
       - name: Create release
         id: create_release
@@ -32,7 +32,7 @@ jobs:
           prerelease: false
 
       - name: Zip the plugin
-        run: zip -r woo-shiprocket-shipping.zip woo-shiprocket-shipping/ -x *.git* *.github*
+        run: zip -r shiprocket-woo-shipping.zip shiprocket-woo-shipping/ -x *.git* *.github*
 
       - name: Upload release asset
         uses: actions/upload-release-asset@v1
@@ -40,6 +40,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./woo-shiprocket-shipping.zip
-          asset_name: woo-shiprocket-shipping.zip
+          asset_path: ./shiprocket-woo-shipping.zip
+          asset_name: shiprocket-woo-shipping.zip
           asset_content_type: application/zip
