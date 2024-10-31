@@ -1,9 +1,9 @@
 {
-  "version": "1.0.2",
-  "download_url": "https://github.com/ProgrammerNomad/shiprocket-woo-shipping/releases/download/1.0.2/shiprocket-woo-shipping.zip",
+  "version": "1.0.3",
+  "download_url": "https://github.com/ProgrammerNomad/shiprocket-woo-shipping/releases/download/1.0.3/shiprocket-woo-shipping.zip",
   "sections": {
     "description": "This is the latest version of the Shiprocket Woo Shipping Plugin.",
     "changelog": "Updated plugin features and bug fixes.",
-    "commit_version": "c490a79175542907bfa99dbf5b78d00b7121a78e"
+    "commit_version": "d6e2969d848b1e8eb2e38b3e80f30e13ec35aef6"
   }
 }
