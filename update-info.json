@@ -2,8 +2,8 @@
   "version": "1.0.2",
   "download_url": "https://github.com/ProgrammerNomad/shiprocket-woo-shipping/releases/download/1.0.2/shiprocket-woo-shipping.zip",
   "sections": {
-    "description": "This is the latest version of the Font Awesome Pro plugin.",
+    "description": "This is the latest version of the Shiprocket Woo Shipping Plugin.",
     "changelog": "Updated plugin features and bug fixes.",
-    "commit_version": "43b1f176ffb2b8fe361d30e74a65372d09d934f4"
+    "commit_version": "c490a79175542907bfa99dbf5b78d00b7121a78e"
   }
 }
