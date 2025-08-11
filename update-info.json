@@ -1,11 +1,11 @@
 {
-  "version": "1.0.10",
-  "download_url": "https://github.com/ProgrammerNomad/shiprocket-woo-shipping/releases/download/v1.0.10/shiprocket-woo-shipping.zip",
-  "details_url": "https://github.com/ProgrammerNomad/shiprocket-woo-shipping/releases/tag/v1.0.10",
+  "version": "1.0.12",
+  "download_url": "https://github.com/ProgrammerNomad/shiprocket-woo-shipping/releases/download/v1.0.12/shiprocket-woo-shipping.zip",
+  "details_url": "https://github.com/ProgrammerNomad/shiprocket-woo-shipping/releases/tag/v1.0.12",
   "sections": {
     "description": "Shiprocket WooCommerce Integration provides real-time shipping rates and pincode serviceability check for your WooCommerce store using the official Shiprocket API.",
-    "changelog": "<h4>Version 1.0.10</h4><ul><li>Enhanced plugin functionality and performance improvements</li><li>Updated to latest Shiprocket API standards</li><li>Improved error handling and user experience</li><li>Better caching mechanism for optimal performance</li></ul><h4>Previous Versions</h4><ul><li>See full changelog on GitHub releases page</li></ul>",
-    "commit_version": "13e6f938a50454120f9649c32ed0c37f1035d75f"
+    "changelog": "<h4>Version 1.0.12</h4><ul><li>Enhanced plugin functionality and performance improvements</li><li>Updated to latest Shiprocket API standards</li><li>Improved error handling and user experience</li><li>Better caching mechanism for optimal performance</li></ul><h4>Previous Versions</h4><ul><li>See full changelog on GitHub releases page</li></ul>",
+    "commit_version": "3783ecbb9920c029c1dce7f007506ed70f47a831"
   },
   "banners": {
     "low": "https://raw.githubusercontent.com/ProgrammerNomad/shiprocket-woo-shipping/main/assets/banner-772x250.png",
@@ -14,6 +14,6 @@
   "tested": "6.4",
   "requires_php": "7.4",
   "requires": "5.0",
-  "last_updated": "2025-08-11 13:08:09",
-  "upgrade_notice": "Important update: Version 1.0.10 includes enhanced functionality and improved performance. Update recommended for all users."
+  "last_updated": "2025-08-11 13:23:00",
+  "upgrade_notice": "Important update: Version 1.0.12 includes enhanced functionality and improved performance. Update recommended for all users."
 }
