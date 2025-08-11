@@ -1,11 +1,11 @@
 {
-  "version": "1.0.7",
-  "download_url": "https://github.com/ProgrammerNomad/shiprocket-woo-shipping/releases/download/v1.0.7/shiprocket-woo-shipping.zip",
-  "details_url": "https://github.com/ProgrammerNomad/shiprocket-woo-shipping/releases/tag/v1.0.7",
+  "version": "1.0.8",
+  "download_url": "https://github.com/ProgrammerNomad/shiprocket-woo-shipping/releases/download/v1.0.8/shiprocket-woo-shipping.zip",
+  "details_url": "https://github.com/ProgrammerNomad/shiprocket-woo-shipping/releases/tag/v1.0.8",
   "sections": {
     "description": "Shiprocket WooCommerce Integration provides real-time shipping rates and pincode serviceability check for your WooCommerce store using the official Shiprocket API.",
-    "changelog": "<h4>Version 1.0.7</h4><ul><li>Enhanced plugin functionality and performance improvements</li><li>Updated to latest Shiprocket API standards</li><li>Improved error handling and user experience</li><li>Better caching mechanism for optimal performance</li></ul><h4>Previous Versions</h4><ul><li>See full changelog on GitHub releases page</li></ul>",
-    "commit_version": "0804319755b278d4460b77a94203ba1cca090100"
+    "changelog": "<h4>Version 1.0.8</h4><ul><li><strong>CRITICAL FIX:</strong> Resolved fatal PHP parse error preventing plugin activation</li><li>Fixed syntax error with unexpected variable outside function scope</li><li>Properly structured calculate_shipping() function</li><li>Enhanced code organization and error handling</li></ul><h4>Version 1.0.7</h4><ul><li>Complete implementation of official Shiprocket API User authentication</li><li>Bearer token authentication following official documentation</li><li>Enhanced security with official authentication methods</li></ul><h4>Previous Versions</h4><ul><li>See full changelog on GitHub releases page</li></ul>",
+    "commit_version": "fe3d26f755b278d4460b77a94203ba1cca090101"
   },
   "banners": {
     "low": "https://raw.githubusercontent.com/ProgrammerNomad/shiprocket-woo-shipping/main/assets/banner-772x250.png",
@@ -14,6 +14,6 @@
   "tested": "6.4",
   "requires_php": "7.4",
   "requires": "5.0",
-  "last_updated": "2025-08-11 12:42:18",
-  "upgrade_notice": "Important update: Version 1.0.7 includes enhanced functionality and improved performance. Update recommended for all users."
+  "last_updated": "2025-08-11 13:15:00",
+  "upgrade_notice": "CRITICAL UPDATE: Version 1.0.8 fixes a fatal PHP parse error that prevented plugin activation. Update immediately if experiencing activation issues."
 }
