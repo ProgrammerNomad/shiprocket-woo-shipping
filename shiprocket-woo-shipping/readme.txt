@@ -5,7 +5,7 @@ Tags: shipping, shiprocket, woocommerce, courier, delivery, logistics, india, pi
 Requires at least: 5.0
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -114,6 +114,17 @@ If you have any questions or need assistance, please [open an issue on GitHub](h
 Contributions are welcome! Feel free to fork the [repository](https://github.com/ProgrammerNomad/shiprocket-woo-shipping) and submit pull requests.
 
 == Changelog ==
+
+= 1.0.6 =
+**WordPress Native Update System**
+* NEW: WordPress native update checker for automatic plugin updates
+* NEW: Rich plugin information display in WordPress admin
+* NEW: Enhanced GitHub Actions automation for seamless releases
+* IMPROVEMENT: Complete integration with WordPress update system
+* IMPROVEMENT: Automatic update notifications in WordPress admin
+* ENHANCEMENT: Comprehensive update information with changelogs
+* FEATURE: Automatic version synchronization between GitHub and WordPress
+* OPTIMIZATION: Improved release workflow with better error handling
 
 = 1.0.5 =
 **UX Enhancement Update**

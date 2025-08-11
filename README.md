@@ -90,7 +90,17 @@ This plugin uses the **official Shiprocket API** with secure API key authenticat
 
 ## 📝 **Changelog**
 
-### v1.0.5 (Latest)
+### v1.0.6 (Latest)
+* ✨ **NEW:** WordPress native update checker for automatic plugin updates
+* 🔄 **NEW:** Rich plugin information display in WordPress admin
+* 🤖 **NEW:** Enhanced GitHub Actions automation for seamless releases
+* 🔗 **IMPROVEMENT:** Complete integration with WordPress update system
+* 📢 **IMPROVEMENT:** Automatic update notifications in WordPress admin
+* 📋 **ENHANCEMENT:** Comprehensive update information with changelogs
+* ⚙️ **FEATURE:** Automatic version synchronization between GitHub and WordPress
+* 🚀 **OPTIMIZATION:** Improved release workflow with better error handling
+
+### v1.0.5
 * ✨ **NEW:** Comprehensive API setup guide on settings page
 * 🔗 **NEW:** Plugin action links for quick access to Settings, Documentation, Support
 * 📋 **NEW:** Plugin meta links for Changelog, Shiprocket Dashboard, GitHub rating
