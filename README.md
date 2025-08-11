@@ -131,7 +131,7 @@ This project is licensed under the GPL v2 or later - see the [LICENSE](LICENSE) 
 
 * **Plugin Repository:** [GitHub](https://github.com/ProgrammerNomad/shiprocket-woo-shipping)
 * **Latest Release:** [Download](https://github.com/ProgrammerNomad/shiprocket-woo-shipping/releases/latest)
-* **Shiprocket Dashboard:** [Login](https://shiprocket.in/dashboard)
+* **Shiprocket Dashboard:** [Login](https://app.shiprocket.in/dashboard)
 * **WordPress Plugin Directory:** Coming Soon
 
 ---

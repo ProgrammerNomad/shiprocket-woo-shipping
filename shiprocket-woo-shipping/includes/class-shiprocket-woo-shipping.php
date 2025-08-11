@@ -122,7 +122,7 @@ function woo_shiprocket_shipping_init() {
 						<div>
 							<h4 style="margin: 0 0 8px 0; color: #135e96;">📋 <?php _e( 'Step-by-Step Guide:', 'shiprocket-woo-shipping' ); ?></h4>
 							<ol style="margin: 8px 0 0 20px;">
-								<li><?php _e( 'Login to your', 'shiprocket-woo-shipping' ); ?> <a href="https://shiprocket.in/dashboard" target="_blank" style="color: #2271b1; text-decoration: none;"><?php _e( 'Shiprocket Dashboard', 'shiprocket-woo-shipping' ); ?> ↗</a></li>
+								<li><?php _e( 'Login to your', 'shiprocket-woo-shipping' ); ?> <a href="https://app.shiprocket.in/dashboard" target="_blank" style="color: #2271b1; text-decoration: none;"><?php _e( 'Shiprocket Dashboard', 'shiprocket-woo-shipping' ); ?> ↗</a></li>
 								<li><?php _e( 'Navigate to', 'shiprocket-woo-shipping' ); ?> <strong><?php _e( 'Settings → API', 'shiprocket-woo-shipping' ); ?></strong></li>
 								<li><?php _e( 'Copy your', 'shiprocket-woo-shipping' ); ?> <strong><?php _e( 'API Key', 'shiprocket-woo-shipping' ); ?></strong> <?php _e( 'from the API section', 'shiprocket-woo-shipping' ); ?></li>
 								<li><?php _e( 'Paste it in the', 'shiprocket-woo-shipping' ); ?> <strong><?php _e( 'Shiprocket API Key', 'shiprocket-woo-shipping' ); ?></strong> <?php _e( 'field above', 'shiprocket-woo-shipping' ); ?></li>

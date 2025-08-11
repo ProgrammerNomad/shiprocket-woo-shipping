@@ -64,7 +64,7 @@ function shiprocket_woo_shipping_plugin_row_meta( $links, $file ) {
     if ( plugin_basename( __FILE__ ) === $file ) {
         $row_meta = array(
             'changelog' => '<a href="https://github.com/ProgrammerNomad/shiprocket-woo-shipping/releases" target="_blank">' . __( 'View Changelog', 'shiprocket-woo-shipping' ) . '</a>',
-            'shiprocket' => '<a href="https://shiprocket.in/dashboard" target="_blank">' . __( 'Shiprocket Dashboard', 'shiprocket-woo-shipping' ) . '</a>',
+            'shiprocket' => '<a href="https://app.shiprocket.in/dashboard" target="_blank">' . __( 'Shiprocket Dashboard', 'shiprocket-woo-shipping' ) . '</a>',
             'rate' => '<a href="https://github.com/ProgrammerNomad/shiprocket-woo-shipping" target="_blank">⭐ ' . __( 'Rate Plugin', 'shiprocket-woo-shipping' ) . '</a>',
         );
         

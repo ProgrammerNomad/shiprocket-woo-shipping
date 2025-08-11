@@ -214,7 +214,7 @@ class Shiprocket_Plugin_Updater {
     private function get_installation_instructions() {
         return '<ol>
             <li><strong>Download and Install:</strong> Upload the plugin ZIP file through WordPress admin</li>
-            <li><strong>Get API Key:</strong> Login to your <a href="https://shiprocket.in/dashboard" target="_blank">Shiprocket Dashboard</a> → Settings → API</li>
+            <li><strong>Get API Key:</strong> Login to your <a href="https://app.shiprocket.in/dashboard" target="_blank">Shiprocket Dashboard</a> → Settings → API</li>
             <li><strong>Configure:</strong> Go to WooCommerce → Settings → Shipping → Shiprocket</li>
             <li><strong>Enter API Key:</strong> Paste your API key and save (plugin validates automatically)</li>
             <li><strong>Test:</strong> Add products to cart and verify shipping rates appear at checkout</li>
