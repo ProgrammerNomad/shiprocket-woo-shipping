@@ -266,23 +266,46 @@ function woo_shiprocket_shipping_init() {
 					   </div>
 				   </div>
 				   <?php
-				   return ob_get_clean();
+				   
+				   return parent::process_admin_options();
 			   }
-                $rates = woo_shiprocket_get_rates( $pincode, $weight, $Dimensions, $total_amount ); // This function will be in the new file
 
-                if ( ! empty( $rates ) ) {
-                    foreach ( $rates as $rate ) {
-                        $this->add_rate( array(
-                            'id'    => $this->id . '_' . $rate['id'],
-                            'label' => $rate['name'],
-                            'cost'  => $rate['cost'], 
-                        ) );
-                    }
-                } else {
-                    // If no rates are found, display an error message
-                    wc_add_notice( __( 'No shipping rates found for your pincode.', 'shiprocket-woo-shipping' ), 'error' );
-                }
-			}
+		   /**
+			* Calculate shipping rates.
+			*
+			* @param array $package Package information.
+			*/
+		   public function calculate_shipping( $package = array() ) {
+			   $destination_postcode = $package['destination']['postcode'];
+			   $weight = 0;
+			   $total_amount = 0;
+
+			   // Calculate total weight and amount
+			   foreach ( $package['contents'] as $item_id => $values ) {
+				   $product = $values['data'];
+				   $weight += $product->get_weight() * $values['quantity'];
+				   $total_amount += $product->get_price() * $values['quantity'];
+			   }
+
+			   // Get dimensions
+			   $dimensions = $this->GetLengthBreadthHeight( $package );
+
+			   // Get shipping rates
+			   $rates = woo_shiprocket_get_rates( $destination_postcode, $weight, $dimensions, $total_amount );
+
+			   if ( ! empty( $rates ) ) {
+				   foreach ( $rates as $rate ) {
+					   $this->add_rate( array(
+						   'id'    => $this->id . '_' . $rate['id'],
+						   'label' => $rate['name'],
+						   'cost'  => $rate['cost'], 
+					   ) );
+				   }
+			   } else {
+				   // If no rates are found, display an error message
+				   wc_add_notice( __( 'No shipping rates found for your pincode.', 'shiprocket-woo-shipping' ), 'error' );
+			   }
+		   }
 
 			public function GetLengthBreadthHeight ($package = array())
 			{
