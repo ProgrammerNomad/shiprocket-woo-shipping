@@ -173,9 +173,13 @@ function woo_shiprocket_shipping_init() {
 				$height = 0;
 				foreach ($package['contents'] as $item_id => $values) {
 					$_product = $values['data'];
-					$length += $_product->get_length() * $values['quantity'];
-					$breadth += $_product->get_width() * $values['quantity'];
-					$height += $_product->get_height() * $values['quantity'];
+					$product_length = is_numeric($_product->get_length()) ? (float)$_product->get_length() : 0;
+					$product_width = is_numeric($_product->get_width()) ? (float)$_product->get_width() : 0;
+					$product_height = is_numeric($_product->get_height()) ? (float)$_product->get_height() : 0;
+					
+					$length += $product_length * $values['quantity'];
+					$breadth += $product_width * $values['quantity'];
+					$height += $product_height * $values['quantity'];
 				}
 				return array('length' => $length, 'breadth' => $breadth, 'height' => $height);
 
