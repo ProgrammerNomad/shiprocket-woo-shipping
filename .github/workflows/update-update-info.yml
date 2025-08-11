@@ -1,9 +1,11 @@
 name: Update update-info.json
 
 on:
-  # Trigger the workflow on push or pull request events but only for the main branch
+  # Trigger the workflow on push to main branch (but not for tags)
   push:
     branches: [ main ]
+    paths-ignore:
+      - 'update-info.json'
   pull_request:
     branches: [ main ]
 
@@ -22,28 +24,46 @@ jobs:
           # Fetch the latest version from shiprocket-woo-shipping.php
           version=$(grep 'Version:' ./shiprocket-woo-shipping/shiprocket-woo-shipping.php | cut -d ':' -f 2 | tr -d ' ')
           
-          # Construct the download URL (replace with your actual URL format)
-          download_url="https://github.com/ProgrammerNomad/shiprocket-woo-shipping/releases/download/$version/shiprocket-woo-shipping.zip" 
+          # Get current date in ISO format
+          current_date=$(date -u +"%Y-%m-%d %H:%M:%S")
           
-          # Create the JSON content for update-info.json
+          # Construct the download URL for latest version
+          download_url="https://github.com/ProgrammerNomad/shiprocket-woo-shipping/releases/download/v$version/shiprocket-woo-shipping.zip"
+          details_url="https://github.com/ProgrammerNomad/shiprocket-woo-shipping/releases/tag/v$version"
+          
+          # Create comprehensive update-info.json content
           cat << EOF > ./update-info.json
           {
             "version": "$version",
             "download_url": "$download_url",
+            "details_url": "$details_url",
             "sections": {
-              "description": "This is the latest version of the Shiprocket Woo Shipping Plugin.",
-              "changelog": "Updated plugin features and bug fixes.",
+              "description": "Shiprocket WooCommerce Integration provides real-time shipping rates and pincode serviceability check for your WooCommerce store using the official Shiprocket API.",
+              "changelog": "<h4>Version $version</h4><ul><li>Enhanced plugin functionality and performance improvements</li><li>Updated to latest Shiprocket API standards</li><li>Improved error handling and user experience</li><li>Better caching mechanism for optimal performance</li></ul><h4>Previous Versions</h4><ul><li>See full changelog on GitHub releases page</li></ul>",
               "commit_version": "$(git rev-parse HEAD)"
-            }
+            },
+            "banners": {
+              "low": "https://raw.githubusercontent.com/ProgrammerNomad/shiprocket-woo-shipping/main/assets/banner-772x250.png",
+              "high": "https://raw.githubusercontent.com/ProgrammerNomad/shiprocket-woo-shipping/main/assets/banner-1544x500.png"
+            },
+            "tested": "6.4",
+            "requires_php": "7.4",
+            "requires": "5.0",
+            "last_updated": "$current_date",
+            "upgrade_notice": "Important update: Version $version includes enhanced functionality and improved performance. Update recommended for all users."
           }
           EOF
 
       - name: Commit Changes
         run: |
-          git config --global user.name 'ProgrammerNomad'
-          git config --global user.email 'shiv@srapsware.com'
-          git add .
-          git commit -m "Update update-info.json"
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add update-info.json
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Auto-update update-info.json for version $version"
+          fi
 
       - name: Push Changes
         uses: ad-m/github-push-action@master

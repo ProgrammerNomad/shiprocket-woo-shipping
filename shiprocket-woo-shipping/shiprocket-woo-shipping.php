@@ -24,6 +24,18 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
     require_once plugin_dir_path( __FILE__ ) . 'includes/shiprocket-woo-shipping-rates.php'; // Include the new file
 }
 
+// Initialize plugin updater for auto-updates
+if ( ! class_exists( 'Shiprocket_Plugin_Updater' ) ) {
+    require_once plugin_dir_path( __FILE__ ) . 'includes/class-shiprocket-plugin-updater.php';
+}
+
+// Initialize the updater
+add_action( 'init', function() {
+    if ( class_exists( 'Shiprocket_Plugin_Updater' ) ) {
+        new Shiprocket_Plugin_Updater( __FILE__ );
+    }
+} );
+
 /**
  * Add plugin action links on plugins page.
  *
