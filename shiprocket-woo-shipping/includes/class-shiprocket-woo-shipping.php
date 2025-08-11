@@ -89,6 +89,92 @@ function woo_shiprocket_shipping_init() {
 			}
 
 			/**
+			 * Generate settings HTML including help information.
+			 *
+			 * @return void
+			 */
+			public function generate_settings_html( $form_fields = array(), $echo = true ) {
+				// Generate the standard settings form
+				$html = parent::generate_settings_html( $form_fields, false );
+				
+				// Add help information after the form
+				$html .= $this->get_api_help_section();
+				
+				if ( $echo ) {
+					echo $html;
+				}
+				
+				return $html;
+			}
+
+			/**
+			 * Get API help section HTML.
+			 *
+			 * @return string Help section HTML.
+			 */
+			private function get_api_help_section() {
+				ob_start();
+				?>
+				<div class="shiprocket-api-help" style="margin-top: 20px; padding: 20px; background: #f8f9fa; border: 1px solid #e1e5e9; border-radius: 6px;">
+					<h3 style="margin-top: 0; color: #1d2327;">🚀 <?php _e( 'Getting Your Shiprocket API Key', 'shiprocket-woo-shipping' ); ?></h3>
+					
+					<div style="display: grid; gap: 15px;">
+						<div>
+							<h4 style="margin: 0 0 8px 0; color: #135e96;">📋 <?php _e( 'Step-by-Step Guide:', 'shiprocket-woo-shipping' ); ?></h4>
+							<ol style="margin: 8px 0 0 20px;">
+								<li><?php _e( 'Login to your', 'shiprocket-woo-shipping' ); ?> <a href="https://shiprocket.in/dashboard" target="_blank" style="color: #2271b1; text-decoration: none;"><?php _e( 'Shiprocket Dashboard', 'shiprocket-woo-shipping' ); ?> ↗</a></li>
+								<li><?php _e( 'Navigate to', 'shiprocket-woo-shipping' ); ?> <strong><?php _e( 'Settings → API', 'shiprocket-woo-shipping' ); ?></strong></li>
+								<li><?php _e( 'Copy your', 'shiprocket-woo-shipping' ); ?> <strong><?php _e( 'API Key', 'shiprocket-woo-shipping' ); ?></strong> <?php _e( 'from the API section', 'shiprocket-woo-shipping' ); ?></li>
+								<li><?php _e( 'Paste it in the', 'shiprocket-woo-shipping' ); ?> <strong><?php _e( 'Shiprocket API Key', 'shiprocket-woo-shipping' ); ?></strong> <?php _e( 'field above', 'shiprocket-woo-shipping' ); ?></li>
+								<li><?php _e( 'Click', 'shiprocket-woo-shipping' ); ?> <strong><?php _e( 'Save changes', 'shiprocket-woo-shipping' ); ?></strong> <?php _e( '(plugin will validate your API key automatically)', 'shiprocket-woo-shipping' ); ?></li>
+							</ol>
+						</div>
+
+						<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px;">
+							<div style="padding: 15px; background: #fff; border: 1px solid #ddd; border-radius: 4px;">
+								<h4 style="margin: 0 0 8px 0; color: #d63384;">🚨 <?php _e( 'Important Notes:', 'shiprocket-woo-shipping' ); ?></h4>
+								<ul style="margin: 8px 0 0 20px; font-size: 14px;">
+									<li><?php _e( 'You need an active Shiprocket account', 'shiprocket-woo-shipping' ); ?></li>
+									<li><?php _e( 'API key replaces email/password authentication', 'shiprocket-woo-shipping' ); ?></li>
+									<li><?php _e( 'Keep your API key secure and private', 'shiprocket-woo-shipping' ); ?></li>
+									<li><?php _e( 'Plugin validates API key when you save settings', 'shiprocket-woo-shipping' ); ?></li>
+								</ul>
+							</div>
+
+							<div style="padding: 15px; background: #fff; border: 1px solid #ddd; border-radius: 4px;">
+								<h4 style="margin: 0 0 8px 0; color: #198754;">✅ <?php _e( 'Features Enabled:', 'shiprocket-woo-shipping' ); ?></h4>
+								<ul style="margin: 8px 0 0 20px; font-size: 14px;">
+									<li><?php _e( 'Real-time shipping rates at checkout', 'shiprocket-woo-shipping' ); ?></li>
+									<li><?php _e( 'Pincode serviceability check on products', 'shiprocket-woo-shipping' ); ?></li>
+									<li><?php _e( 'Auto-pickup location from store settings', 'shiprocket-woo-shipping' ); ?></li>
+									<li><?php _e( 'Intelligent caching for better performance', 'shiprocket-woo-shipping' ); ?></li>
+								</ul>
+							</div>
+						</div>
+
+						<div style="padding: 15px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 4px; margin-top: 10px;">
+							<h4 style="margin: 0 0 8px 0; color: #856404;">💡 <?php _e( 'Need Help?', 'shiprocket-woo-shipping' ); ?></h4>
+							<p style="margin: 8px 0; font-size: 14px;">
+								<?php _e( 'Having trouble? Check our', 'shiprocket-woo-shipping' ); ?>
+								<a href="https://github.com/ProgrammerNomad/shiprocket-woo-shipping/wiki" target="_blank" style="color: #856404; font-weight: 600;"><?php _e( 'Documentation', 'shiprocket-woo-shipping' ); ?> ↗</a>
+								<?php _e( 'or', 'shiprocket-woo-shipping' ); ?>
+								<a href="https://github.com/ProgrammerNomad/shiprocket-woo-shipping/issues" target="_blank" style="color: #856404; font-weight: 600;"><?php _e( 'Report an Issue', 'shiprocket-woo-shipping' ); ?> ↗</a>
+							</p>
+						</div>
+
+						<div style="text-align: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd;">
+							<p style="margin: 0; font-size: 14px; color: #6c757d;">
+								<?php _e( 'Made with', 'shiprocket-woo-shipping' ); ?> ❤️ <?php _e( 'for the WooCommerce community', 'shiprocket-woo-shipping' ); ?> |
+								<a href="https://github.com/ProgrammerNomad/shiprocket-woo-shipping" target="_blank" style="color: #6c757d;"><?php _e( 'View on GitHub', 'shiprocket-woo-shipping' ); ?> ↗</a>
+							</p>
+						</div>
+					</div>
+				</div>
+				<?php
+				return ob_get_clean();
+			}
+
+			/**
 			 * Get shop postcode from WooCommerce settings.
 			 *
 			 * @return string Shop postcode.
@@ -212,6 +298,43 @@ function add_woo_shiprocket_shipping_method( $methods ) {
 }
 
 add_filter( 'woocommerce_shipping_methods', 'add_woo_shiprocket_shipping_method' );
+
+/**
+ * Enqueue admin styles for settings page.
+ */
+function shiprocket_woo_shipping_admin_styles( $hook ) {
+    // Only load on WooCommerce settings pages
+    if ( $hook === 'woocommerce_page_wc-settings' && isset( $_GET['section'] ) && $_GET['section'] === 'woo_shiprocket_shipping' ) {
+        // Add some inline CSS for better styling
+        $css = '
+        <style>
+        .shiprocket-api-help h3 { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+        }
+        .shiprocket-api-help h4 { 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+        }
+        .shiprocket-api-help a {
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .shiprocket-api-help a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 768px) {
+            .shiprocket-api-help > div > div:nth-child(2) {
+                grid-template-columns: 1fr;
+            }
+        }
+        </style>';
+        echo $css;
+    }
+}
+add_action( 'admin_head', 'shiprocket_woo_shipping_admin_styles' );
 
 /**
  * Enqueue JavaScript for AJAX call.
