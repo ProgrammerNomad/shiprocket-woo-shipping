@@ -45,6 +45,129 @@ function show_shiprocket_pincode_check()
     </div>
     <div id="pincode_response"></div>
     <script>
+        // Universal visibility fix - ensure pincode form shows on all devices
+        document.addEventListener('DOMContentLoaded', function() {
+            var pincodeForm = document.getElementById('pincode_check_form');
+            var pincodeResponse = document.getElementById('pincode_response');
+            
+            if (pincodeForm) {
+                // Force visibility with JavaScript
+                pincodeForm.style.display = 'block';
+                pincodeForm.style.visibility = 'visible';
+                pincodeForm.style.opacity = '1';
+                pincodeForm.style.position = 'relative';
+                pincodeForm.style.zIndex = '1';
+                
+                // Add CSS class for universal display
+                pincodeForm.classList.add('shiprocket-pincode-universal');
+                
+                // Ensure it's visible on all screen sizes
+                var universalCSS = `
+                    #pincode_check_form,
+                    .shiprocket-pincode-universal {
+                        display: block !important;
+                        visibility: visible !important;
+                        opacity: 1 !important;
+                        position: relative !important;
+                        width: 100% !important;
+                        max-width: 100% !important;
+                        margin: 1.5rem 0 !important;
+                        padding: 1.25rem !important;
+                        background-color: #f8fafc !important;
+                        border: 1px solid #e2e8f0 !important;
+                        border-radius: 0.5rem !important;
+                        box-sizing: border-box !important;
+                    }
+                    
+                    /* Mobile Layout */
+                    @media (max-width: 767px) {
+                        #pincode_check_form,
+                        .shiprocket-pincode-universal {
+                            display: block !important;
+                        }
+                    }
+                    
+                    /* Tablet and Desktop Layout */
+                    @media (min-width: 768px) {
+                        #pincode_check_form,
+                        .shiprocket-pincode-universal {
+                            display: flex !important;
+                            align-items: end !important;
+                            gap: 0.75rem !important;
+                        }
+                    }
+                    
+                    /* Force visibility in all theme contexts */
+                    .lg\\:hidden #pincode_check_form,
+                    .hidden #pincode_check_form,
+                    .lg\\:block #pincode_check_form,
+                    .block #pincode_check_form,
+                    .container #pincode_check_form,
+                    .woocommerce #pincode_check_form,
+                    .single-product #pincode_check_form {
+                        display: block !important;
+                        visibility: visible !important;
+                    }
+                    
+                    /* Desktop specific overrides */
+                    @media (min-width: 1024px) {
+                        .lg\\:hidden #pincode_check_form,
+                        .hidden #pincode_check_form {
+                            display: flex !important;
+                        }
+                    }
+                    
+                    /* Input and button styling */
+                    #shiprocket_pincode_check {
+                        width: 100% !important;
+                        max-width: 100% !important;
+                        display: block !important;
+                    }
+                    
+                    #check_pincode {
+                        display: block !important;
+                        width: 100% !important;
+                    }
+                    
+                    @media (min-width: 768px) {
+                        #shiprocket_pincode_check {
+                            flex: 1 !important;
+                            width: auto !important;
+                        }
+                        
+                        #check_pincode {
+                            width: auto !important;
+                            min-width: 140px !important;
+                        }
+                    }
+                `;
+                
+                // Inject CSS
+                var style = document.createElement('style');
+                style.id = 'shiprocket-universal-css';
+                style.textContent = universalCSS;
+                document.head.appendChild(style);
+                
+                console.log('Shiprocket: Pincode form visibility forced for all devices');
+            } else {
+                // If form not found, try to find it after a delay (in case it loads later)
+                setTimeout(function() {
+                    var delayedForm = document.getElementById('pincode_check_form');
+                    if (delayedForm) {
+                        delayedForm.style.display = 'block';
+                        delayedForm.style.visibility = 'visible';
+                        console.log('Shiprocket: Found pincode form after delay, made visible');
+                    } else {
+                        console.log('Shiprocket: Pincode form not found - may be disabled in settings');
+                    }
+                }, 1000);
+            }
+            
+            if (pincodeResponse) {
+                pincodeResponse.style.display = 'block';
+                pincodeResponse.style.visibility = 'visible';
+            }
+        });
 
         function checkPincode_Shiprocket_Manual() {
             var pincode = document.getElementById("shiprocket_pincode_check").value;
@@ -131,6 +254,17 @@ function show_shiprocket_pincode_check()
                 checkPincode_Shiprocket_Manual();
             }
         });
+
+        // Periodic check to ensure visibility (in case theme JS tries to hide it)
+        setInterval(function() {
+            var pincodeForm = document.getElementById('pincode_check_form');
+            if (pincodeForm && (pincodeForm.style.display === 'none' || pincodeForm.style.visibility === 'hidden')) {
+                console.log('Shiprocket: Re-enforcing pincode form visibility');
+                pincodeForm.style.display = 'block';
+                pincodeForm.style.visibility = 'visible';
+                pincodeForm.style.opacity = '1';
+            }
+        }, 2000); // Check every 2 seconds
 
         // Check if a pincode is saved in localStorage and pre-fill the input field
         var savedPincode = localStorage.getItem('shiprocket_pincode');
