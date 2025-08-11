@@ -1,0 +1,181 @@
+/* Pincode Check Styling - Myntra Style */
+.pincode-check-container {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.pincode-delivery-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    color: #343a40;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.pincode-delivery-icon {
+    width: 20px;
+    height: 20px;
+    margin-left: 8px;
+    fill: #007bff;
+}
+
+.pincode-form {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    align-items: center;
+}
+
+.pincode-input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+    background: #fff;
+    color: #495057;
+    transition: border-color 0.15s ease-in-out;
+}
+
+.pincode-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.pincode-input::placeholder {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.pincode-check-btn {
+    padding: 10px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out;
+    white-space: nowrap;
+}
+
+.pincode-check-btn:hover {
+    background: #0056b3;
+}
+
+.pincode-check-btn:active {
+    background: #004085;
+}
+
+.pincode-check-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+}
+
+.pincode-help-text {
+    color: #6c757d;
+    font-size: 13px;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.pincode-response {
+    margin-top: 12px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.pincode-response.success {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+.pincode-response.error {
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+}
+
+.pincode-response.info {
+    background: #d1ecf1;
+    border: 1px solid #bee5eb;
+    color: #0c5460;
+}
+
+/* Mobile Responsive */
+@media (max-width: 576px) {
+    .pincode-form {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .pincode-input {
+        width: 100%;
+    }
+    
+    .pincode-check-btn {
+        width: 100%;
+        padding: 12px 20px;
+    }
+}
+
+/* Loading state */
+.pincode-check-btn.loading {
+    background: #6c757d;
+    cursor: not-allowed;
+    position: relative;
+}
+
+.pincode-check-btn.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 16px;
+    height: 16px;
+    border: 2px solid #fff;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: pincode-spinner 1s linear infinite;
+}
+
+@keyframes pincode-spinner {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.pincode-check-btn.loading span {
+    opacity: 0;
+}
+
+/* Integration with theme styles */
+.tostishop-pincode-check {
+    margin: 20px 0;
+}
+
+.tostishop-pincode-check .pincode-check-container {
+    background: #f9f9f9;
+    border: 1px solid #e5e5e5;
+}
+
+.tostishop-pincode-check .pincode-check-btn {
+    background: #2563eb;
+    transition: all 0.2s;
+}
+
+.tostishop-pincode-check .pincode-check-btn:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+}
