@@ -1,14 +1,19 @@
 <?php
 /**
- * Plugin Name: Shiprocket Woo Shipping
+ * Plugin Name: Shiprocket WooCommerce Shipping
  * Plugin URI:  https://github.com/ProgrammerNomad/shiprocket-woo-shipping
- * Description: Integrate Shiprocket shipping rates into your WooCommerce store.
- * Version:     1.0.3
+ * Description: Modern, secure integration with Shiprocket's official API for real-time shipping rates and delivery estimates.
+ * Version:     1.0.4
  * Author:      Shiv Singh
  * Author URI:  https://github.com/ProgrammerNomad/
  * Text Domain: shiprocket-woo-shipping
  * Domain Path: /languages
  * License:     GPLv2 or later
+ * Requires at least: 5.0
+ * Tested up to: 6.6
+ * Requires PHP: 7.4
+ * WC requires at least: 3.0
+ * WC tested up to: 8.0
  * @package shiprocket-woo-shipping
  */
 

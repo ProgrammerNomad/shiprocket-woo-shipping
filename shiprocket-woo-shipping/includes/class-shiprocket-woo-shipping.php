@@ -52,26 +52,19 @@ function woo_shiprocket_shipping_init() {
 			 */
 			public function init_form_fields() {
 				$this->form_fields = array(
-					'email' => array(
-						'title'       => __( 'Shiprocket Email', 'shiprocket-woo-shipping' ),
+					'api_key' => array(
+						'title'       => __( 'Shiprocket API Key', 'shiprocket-woo-shipping' ),
 						'type'        => 'text',
-						'description' => __( 'Enter your Shiprocket Email.', 'shiprocket-woo-shipping' ),
+						'description' => __( 'Enter your Shiprocket API Key from Settings > API in your Shiprocket dashboard.', 'shiprocket-woo-shipping' ),
 						'default'     => '',
+						'desc_tip'    => true,
 					),
-					'password' => array(
-						'title'       => __( 'Shiprocket Password', 'shiprocket-woo-shipping' ),
-						'type'        => 'password',
-						'description' => __( 'Enter your Shiprocket Password.', 'shiprocket-woo-shipping' ),
-						'default'     => '',
-					),
-					'token' => array(
-						'title'       => __( 'Shiprocket Token', 'shiprocket-woo-shipping' ),
-						'type'        => 'textarea',
-						'description' => __( 'Shiprocket Token (generated on save)', 'shiprocket-woo-shipping' ),
-						'default'     => '',
-						'custom_attributes' => array(
-							'readonly' => 'readonly'
-						),
+					'pickup_postcode' => array(
+						'title'       => __( 'Pickup Postcode', 'shiprocket-woo-shipping' ),
+						'type'        => 'text',
+						'description' => __( 'Your warehouse/pickup location postcode. Auto-filled from WooCommerce store address.', 'shiprocket-woo-shipping' ),
+						'default'     => $this->get_shop_postcode(),
+						'desc_tip'    => true,
 					),
 					'show_pincode_check' => array(
 						'title'       => __( 'Show Pincode Check', 'shiprocket-woo-shipping' ),
@@ -85,7 +78,31 @@ function woo_shiprocket_shipping_init() {
 						'label'       => __( 'Show only top rated 5 courier providers.', 'shiprocket-woo-shipping' ),
 						'default'     => 'yes',
 					),
+					'cache_duration' => array(
+						'title'       => __( 'Cache Duration (minutes)', 'shiprocket-woo-shipping' ),
+						'type'        => 'number',
+						'description' => __( 'How long to cache shipping rates to improve performance.', 'shiprocket-woo-shipping' ),
+						'default'     => '10',
+						'desc_tip'    => true,
+					),
 				);
+			}
+
+			/**
+			 * Get shop postcode from WooCommerce settings.
+			 *
+			 * @return string Shop postcode.
+			 */
+			private function get_shop_postcode() {
+				$postcode = get_option('woocommerce_store_postcode');
+				
+				// Fallback to base location if store postcode is not set
+				if (empty($postcode)) {
+					$base_location = wc_get_base_location();
+					$postcode = WC()->countries->get_base_postcode();
+				}
+				
+				return $postcode ? $postcode : '';
 			}
 
 			/**
@@ -94,45 +111,47 @@ function woo_shiprocket_shipping_init() {
 			 * @return bool Was anything saved?
 			 */
 			public function process_admin_options() {
-				// Get the entered email and password
-				$email = sanitize_text_field( $_POST['woocommerce_woo_shiprocket_shipping_email'] );
-				$password = sanitize_text_field( $_POST['woocommerce_woo_shiprocket_shipping_password'] );
-
-				// Make API call to Shiprocket to generate token with raw JSON body
-				$response = wp_remote_post( 'https://apiv2.shiprocket.in/v1/external/auth/login', array(
-					'headers' => array( 'Content-Type' => 'application/json' ), // Set Content-Type header
-					'body'    => wp_json_encode( array( // Encode body as JSON string
-						'email'    => $email,
-						'password' => $password,
-					) ),
-				) );
-
-				if ( is_wp_error( $response ) ) {
-					// Handle API error (e.g., display a notice)
-					/* translators: %s: The error message from the Shiprocket API. */
-					WC_Admin_Settings::add_error( sprintf( __( 'Shiprocket API Error: %s', 'shiprocket-woo-shipping' ), $response->get_error_message() ) );
-					return false;
+				// Validate API key
+				$api_key = sanitize_text_field( $_POST['woocommerce_woo_shiprocket_shipping_api_key'] );
+				
+				if ( !empty( $api_key ) ) {
+					// Test API key with a simple serviceability check
+					$test_response = $this->test_api_key( $api_key );
+					
+					if ( !$test_response ) {
+						WC_Admin_Settings::add_error( __( 'Invalid Shiprocket API Key. Please check your API key from Shiprocket dashboard.', 'shiprocket-woo-shipping' ) );
+						return false;
+					} else {
+						WC_Admin_Settings::add_message( __( 'Shiprocket API Key validated successfully!', 'shiprocket-woo-shipping' ) );
+					}
 				}
-
-				$body = json_decode( wp_remote_retrieve_body( $response ) );
-				$code = wp_remote_retrieve_response_code( $response ); // Get the HTTP status code
-
-				// Check if the status code is 403 (Forbidden)
-				if ( $code == 403 ) {
-					$error_message = __( 'Invalid Shiprocket email or password.', 'shiprocket-woo-shipping' );
-					WC_Admin_Settings::add_error( $error_message );
-					return false; 
-				} else if ( ! isset( $body->token ) ) { // Check for other token generation errors
-					$error_message = __( 'Failed to generate Shiprocket token.', 'shiprocket-woo-shipping' );
-					WC_Admin_Settings::add_error( $error_message );
-					return false; 
-				}
-
-				// Update the token field in the settings
-				$_POST['woocommerce_woo_shiprocket_shipping_token'] = $body->token; 
 
 				// Continue with the default saving process
 				return parent::process_admin_options();
+			}
+
+			/**
+			 * Test API key validity.
+			 *
+			 * @param string $api_key The API key to test.
+			 * @return bool True if valid, false otherwise.
+			 */
+			private function test_api_key( $api_key ) {
+				// Simple test call to verify API key
+				$response = wp_remote_get( 'https://apiv2.shiprocket.in/v1/courier/companies', array(
+					'headers' => array(
+						'Authorization' => 'Bearer ' . $api_key,
+						'Content-Type' => 'application/json',
+					),
+					'timeout' => 30,
+				) );
+
+				if ( is_wp_error( $response ) ) {
+					return false;
+				}
+
+				$response_code = wp_remote_retrieve_response_code( $response );
+				return $response_code === 200;
 			}
 
 

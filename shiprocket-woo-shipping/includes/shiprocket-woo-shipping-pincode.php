@@ -113,19 +113,27 @@ function shiprocket_pincode_check_ajax_handler()
 
     $weight = floatval($product->get_weight()); // Get the product weight
 
-    // Get the Shiprocket token from settings
+    // Get the Shiprocket settings
     $settings = get_option('woocommerce_woo_shiprocket_shipping_settings');
-    $token = isset($settings['token']) ? $settings['token'] : '';
+    $api_key = isset($settings['api_key']) ? $settings['api_key'] : '';
+    $pickup_postcode = isset($settings['pickup_postcode']) ? $settings['pickup_postcode'] : '';
 
-    if (!$token) {
-        wp_send_json_error(array('message' => __('Shiprocket token not found.', 'shiprocket-woo-shipping')));
+    // Fallback to WooCommerce store postcode if not set in settings
+    if (empty($pickup_postcode)) {
+        $pickup_postcode = get_option('woocommerce_store_postcode');
+        
+        // Additional fallback to base location
+        if (empty($pickup_postcode)) {
+            $pickup_postcode = WC()->countries->get_base_postcode();
+        }
+    }
+
+    if (!$api_key || !$pickup_postcode) {
+        wp_send_json_error(array('message' => __('Shiprocket API key or pickup postcode not found.', 'shiprocket-woo-shipping')));
     }
 
     // Shiprocket API endpoint URL
     $endpoint_url = 'https://apiv2.shiprocket.in/v1/courier/ratingserviceability';
-
-    // Get the store's postcode from WooCommerce settings
-    $pickup_postcode = get_option('woocommerce_store_postcode');
 
     // Shipping data 
     $cod = '0';
@@ -156,18 +164,19 @@ function shiprocket_pincode_check_ajax_handler()
         'length' => $length,
         'breadth' => $breadth,
         'height' => $height,
-
     ));
 
     // Construct the full URL with the query string
     $full_url = $endpoint_url . '?' . $query_string;
 
-    // Build the request arguments
+    // Build the request arguments with API key authentication
     $args = array(
         'headers' => array(
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer ' . $api_key,
+            'Content-Type' => 'application/json',
         ),
         'method' => 'GET',
+        'timeout' => 30,
     );
 
     // Make the API request
