@@ -10,6 +10,73 @@ if (!defined('ABSPATH')) {
 }
 
 /**
+ * Get Shiprocket authentication token.
+ *
+ * @return string|false Bearer token or false on failure.
+ */
+function woo_shiprocket_get_auth_token() {
+    // Check for cached token first
+    $token = get_transient('shiprocket_auth_token');
+    if ($token) {
+        return $token;
+    }
+
+    // Get the Shiprocket settings
+    $settings = get_option('woocommerce_woo_shiprocket_shipping_settings');
+    $api_user_email = isset($settings['api_user_email']) ? $settings['api_user_email'] : '';
+    $api_user_password = isset($settings['api_user_password']) ? $settings['api_user_password'] : '';
+
+    if (!$api_user_email || !$api_user_password) {
+        error_log('Shiprocket: Missing API user credentials');
+        return false;
+    }
+
+    // Login endpoint URL as per official documentation
+    $login_url = 'https://apiv2.shiprocket.in/v1/external/auth/login';
+
+    // Request data
+    $body = json_encode(array(
+        'email' => $api_user_email,
+        'password' => $api_user_password,
+    ));
+
+    // Build the request arguments
+    $args = array(
+        'headers' => array(
+            'Content-Type' => 'application/json',
+        ),
+        'body' => $body,
+        'method' => 'POST',
+        'timeout' => 30,
+    );
+
+    // Make the authentication request
+    $response = wp_remote_post($login_url, $args);
+
+    if (is_wp_error($response)) {
+        error_log('Shiprocket Auth Error: ' . $response->get_error_message());
+        return false;
+    }
+
+    $response_code = wp_remote_retrieve_response_code($response);
+    if ($response_code !== 200) {
+        error_log('Shiprocket Auth Error: HTTP ' . $response_code . ' - ' . wp_remote_retrieve_body($response));
+        return false;
+    }
+
+    $body = json_decode(wp_remote_retrieve_body($response), true);
+
+    if (isset($body['token'])) {
+        // Cache token for 23 hours (tokens typically last 24 hours)
+        set_transient('shiprocket_auth_token', $body['token'], 23 * HOUR_IN_SECONDS);
+        return $body['token'];
+    }
+
+    error_log('Shiprocket Auth Error: No token in response');
+    return false;
+}
+
+/**
  * Get shipping rates from Shiprocket API.
  *
  * @param string $pincode Destination pincode.
@@ -21,9 +88,15 @@ if (!defined('ABSPATH')) {
  */
 function woo_shiprocket_get_rates($pincode, $weight, $dimensions, $total_amount)
 {
+    // Get authentication token
+    $auth_token = woo_shiprocket_get_auth_token();
+    if (!$auth_token) {
+        error_log('Shiprocket: Failed to get authentication token');
+        return array();
+    }
+
     // Get the Shiprocket settings
     $settings = get_option('woocommerce_woo_shiprocket_shipping_settings');
-    $api_key = isset($settings['api_key']) ? $settings['api_key'] : '';
     $pickup_postcode = isset($settings['pickup_postcode']) ? $settings['pickup_postcode'] : '';
 
     // Fallback to WooCommerce store postcode if not set in settings
@@ -36,8 +109,8 @@ function woo_shiprocket_get_rates($pincode, $weight, $dimensions, $total_amount)
         }
     }
 
-    if (!$api_key || !$pickup_postcode) {
-        error_log('Shiprocket: Missing API key or pickup postcode');
+    if (!$pickup_postcode) {
+        error_log('Shiprocket: Missing pickup postcode');
         return array();
     }
 
@@ -89,10 +162,10 @@ function woo_shiprocket_get_rates($pincode, $weight, $dimensions, $total_amount)
     // Construct the full URL with the query string
     $full_url = $endpoint_url . '?' . $query_string;
 
-    // Build the request arguments with API key authentication
+    // Build the request arguments with Bearer token authentication
     $args = array(
         'headers' => array(
-            'Authorization' => 'Bearer ' . $api_key,
+            'Authorization' => 'Bearer ' . $auth_token,
             'Content-Type' => 'application/json',
         ),
         'method' => 'GET',

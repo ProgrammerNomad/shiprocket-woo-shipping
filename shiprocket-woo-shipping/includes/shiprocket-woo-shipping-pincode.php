@@ -115,7 +115,10 @@ function shiprocket_pincode_check_ajax_handler()
 
     // Get the Shiprocket settings
     $settings = get_option('woocommerce_woo_shiprocket_shipping_settings');
-    $api_key = isset($settings['api_key']) ? $settings['api_key'] : '';
+    
+    // Check if we have API user credentials
+    $api_user_email = isset($settings['api_user_email']) ? $settings['api_user_email'] : '';
+    $api_user_password = isset($settings['api_user_password']) ? $settings['api_user_password'] : '';
     $pickup_postcode = isset($settings['pickup_postcode']) ? $settings['pickup_postcode'] : '';
 
     // Fallback to WooCommerce store postcode if not set in settings
@@ -128,8 +131,14 @@ function shiprocket_pincode_check_ajax_handler()
         }
     }
 
-    if (!$api_key || !$pickup_postcode) {
-        wp_send_json_error(array('message' => __('Shiprocket API key or pickup postcode not found.', 'shiprocket-woo-shipping')));
+    if (!$api_user_email || !$api_user_password || !$pickup_postcode) {
+        wp_send_json_error(array('message' => __('Shiprocket API credentials or pickup postcode not found.', 'shiprocket-woo-shipping')));
+    }
+
+    // Get authentication token
+    $auth_token = woo_shiprocket_get_auth_token();
+    if (!$auth_token) {
+        wp_send_json_error(array('message' => __('Failed to authenticate with Shiprocket API.', 'shiprocket-woo-shipping')));
     }
 
     // Shiprocket API endpoint URL
@@ -169,10 +178,10 @@ function shiprocket_pincode_check_ajax_handler()
     // Construct the full URL with the query string
     $full_url = $endpoint_url . '?' . $query_string;
 
-    // Build the request arguments with API key authentication
+    // Build the request arguments with Bearer token authentication
     $args = array(
         'headers' => array(
-            'Authorization' => 'Bearer ' . $api_key,
+            'Authorization' => 'Bearer ' . $auth_token,
             'Content-Type' => 'application/json',
         ),
         'method' => 'GET',

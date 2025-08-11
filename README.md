@@ -2,13 +2,13 @@
 
 A modern, secure WooCommerce shipping plugin that integrates seamlessly with Shiprocket's official API to provide real-time shipping rates and delivery estimates.
 
-## 🚀 **Modern API Integration**
+## 🚀 **Official API Integration**
 
-This plugin uses the **official Shiprocket API** with secure API key authentication, following current best practices for production WordPress plugins.
+This plugin uses the **official Shiprocket API** with secure API User authentication, following Shiprocket's official documentation and current best practices for production WordPress plugins.
 
 ## ✨ **Key Features**
 
-* **🔐 Secure API Integration:** Uses official Shiprocket API keys (no password storage)
+* **🔐 Secure API Integration:** Uses official Shiprocket API User authentication (Bearer token)
 * **📦 Real-time Shipping Rates:** Live rates based on weight, dimensions, and distance
 * **📍 Smart Pickup Location:** Automatically uses your WooCommerce store address
 * **⚡ Performance Optimized:** Intelligent caching system reduces API calls
@@ -20,7 +20,8 @@ This plugin uses the **official Shiprocket API** with secure API key authenticat
 
 ## 🛡️ **Security & Performance**
 
-* API key validation on save
+* Official API User authentication with Bearer tokens
+* Automatic token refresh and caching (23 hours)
 * Enhanced error handling and logging
 * Intelligent caching (configurable duration)
 * Input sanitization throughout
@@ -40,17 +41,19 @@ This plugin uses the **official Shiprocket API** with secure API key authenticat
    - Upload to WordPress: `Plugins → Add New → Upload Plugin`
    - Activate the plugin
 
-2. **Get Your API Key:**
+2. **Create API User:**
    - Login to your [Shiprocket Dashboard](https://shiprocket.in/)
-   - Navigate to `Settings → API`
-   - Copy your API Key
+   - Navigate to `Settings → API User`
+   - Click "Create New API User"
+   - Fill in the required details and save
+   - Note down the **API User Email** and **Password**
 
 3. **Configure Plugin:**
    - Go to `WooCommerce → Settings → Shipping → Shiprocket`
-   - Enter your **Shiprocket API Key**
+   - Enter your **API User Email** and **API User Password**
    - **Pickup Postcode** auto-fills from your store address
    - Configure other options as needed
-   - Save settings (plugin validates API key automatically)
+   - Save settings (plugin validates credentials automatically)
 
 4. **Test Integration:**
    - Add products to cart and test checkout
@@ -61,7 +64,8 @@ This plugin uses the **official Shiprocket API** with secure API key authenticat
 
 | Setting | Description | Default |
 |---------|-------------|---------|
-| **API Key** | Your Shiprocket API key | Required |
+| **API User Email** | Your Shiprocket API User email | Required |
+| **API User Password** | Your Shiprocket API User password | Required |
 | **Pickup Postcode** | Auto-filled from store address | Auto-detected |
 | **Pincode Check** | Enable pincode verification on products | Disabled |
 | **Top Couriers Only** | Show only top 5 rated couriers | Enabled |
@@ -90,7 +94,17 @@ This plugin uses the **official Shiprocket API** with secure API key authenticat
 
 ## 📝 **Changelog**
 
-### v1.0.6 (Latest)
+### v1.0.7 (Latest)
+* 🔥 **MAJOR:** Official Shiprocket API compliance implementation
+* 🔐 **NEW:** API User authentication (replaces deprecated API key method)
+* 🎯 **NEW:** Bearer token authentication following official API documentation
+* ⚡ **NEW:** Automatic token refresh and 23-hour caching system
+* 📚 **NEW:** Comprehensive API User creation guide in settings
+* 🛡️ **SECURITY:** Enhanced authentication security with official methods
+* 📖 **IMPROVEMENT:** Updated documentation to reflect official API usage
+* 🔄 **MIGRATION:** Seamless transition from old API key to new API User method
+
+### v1.0.6
 * ✨ **NEW:** WordPress native update checker for automatic plugin updates
 * 🔄 **NEW:** Rich plugin information display in WordPress admin
 * 🤖 **NEW:** Enhanced GitHub Actions automation for seamless releases

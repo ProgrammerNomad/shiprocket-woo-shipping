@@ -5,7 +5,7 @@ Tags: shipping, shiprocket, woocommerce, courier, delivery, logistics, india, pi
 Requires at least: 5.0
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,14 +13,14 @@ Modern, secure integration with Shiprocket's official API for real-time shipping
 
 == Description ==
 
-Transform your WooCommerce store with modern Shiprocket integration! This plugin uses the **official Shiprocket API** with secure authentication to deliver real-time shipping rates and seamless customer experience.
+Transform your WooCommerce store with modern Shiprocket integration! This plugin uses the **official Shiprocket API** with secure API User authentication to deliver real-time shipping rates and seamless customer experience.
 
 **🚀 Why Choose This Plugin?**
 
-* **Official API Integration**: Uses Shiprocket's recommended API key authentication
-* **Production Ready**: Built with security and performance best practices
+* **Official API Integration**: Uses Shiprocket's official API User authentication method
+* **Production Ready**: Built following official API documentation and security best practices
 * **Auto-Configuration**: Smart pickup location detection from your store settings
-* **Performance Optimized**: Intelligent caching reduces loading times
+* **Performance Optimized**: Bearer token caching reduces loading times
 * **Customer Focused**: Smooth checkout experience with accurate rates
 
 **⚡ Key Features:**
@@ -36,7 +36,8 @@ Transform your WooCommerce store with modern Shiprocket integration! This plugin
 
 **🛡️ Security & Performance:**
 
-* Secure API key authentication (no password storage)
+* Official API User authentication with Bearer token system
+* Automatic token refresh and 23-hour caching
 * Enhanced error handling and logging
 * Input sanitization throughout
 * Production-ready architecture
@@ -57,17 +58,19 @@ Transform your WooCommerce store with modern Shiprocket integration! This plugin
    * Upload via WordPress admin: `Plugins → Add New → Upload Plugin`
    * Activate the plugin
 
-2. **Get Shiprocket API Key:**
+2. **Create API User:**
    * Login to your [Shiprocket Dashboard](https://shiprocket.in/)
-   * Navigate to `Settings → API`
-   * Copy your API Key
+   * Navigate to `Settings → API User`
+   * Click "Create New API User"
+   * Fill in the required details and save
+   * Note down the **API User Email** and **Password**
 
 3. **Configure Settings:**
    * Go to `WooCommerce → Settings → Shipping → Shiprocket`
-   * Enter your **Shiprocket API Key**
+   * Enter your **API User Email** and **API User Password**
    * **Pickup Postcode** auto-fills from your store address
    * Adjust other settings as needed
-   * Save (plugin validates API key automatically)
+   * Save (plugin validates credentials automatically)
 
 4. **Test Integration:**
    * Add products to cart and test checkout
@@ -78,8 +81,8 @@ Transform your WooCommerce store with modern Shiprocket integration! This plugin
 
 == Frequently Asked Questions ==
 
-= How do I get my Shiprocket API key? =
-Login to your Shiprocket dashboard, go to Settings → API, and copy your API key. Paste it in the plugin settings.
+= How do I get my Shiprocket API credentials? =
+Login to your Shiprocket dashboard, go to Settings → API User, create a new API User, and note down the email and password. Enter these in the plugin settings.
 
 = Will this work with my existing shipping methods? =
 Yes! This plugin adds Shiprocket as an additional shipping method. Your existing methods will continue to work.
@@ -96,8 +99,8 @@ Yes! You can choose to show all available couriers or only the top 5 rated ones 
 = Does it cache shipping rates for better performance? =
 Absolutely! The plugin includes intelligent caching (default 10 minutes) to improve loading speeds and reduce API calls.
 
-= Is my API key secure? =
-Yes, the plugin uses secure API key authentication (no password storage) and follows WordPress security best practices.
+= Are my API credentials secure? =
+Yes, the plugin uses official API User authentication with Bearer tokens (no API key storage) and follows WordPress security best practices. Tokens are automatically refreshed and cached securely.
 
 = Can customers check delivery time before adding to cart? =
 Yes! Enable the pincode check feature, and customers can verify delivery options directly on product pages.
@@ -114,6 +117,18 @@ If you have any questions or need assistance, please [open an issue on GitHub](h
 Contributions are welcome! Feel free to fork the [repository](https://github.com/ProgrammerNomad/shiprocket-woo-shipping) and submit pull requests.
 
 == Changelog ==
+
+= 1.0.7 =
+**Official API Compliance Update**
+* MAJOR: Complete implementation of official Shiprocket API User authentication
+* NEW: API User authentication system (replaces deprecated API key method)
+* NEW: Bearer token authentication following official API documentation
+* NEW: Automatic token refresh and 23-hour caching system
+* NEW: Comprehensive API User creation guide in plugin settings
+* SECURITY: Enhanced authentication security with official Shiprocket methods
+* IMPROVEMENT: Updated all API calls to use Bearer token authentication
+* MIGRATION: Seamless transition from old API key to new API User method
+* DOCUMENTATION: Updated readme and help sections for official API usage
 
 = 1.0.6 =
 **WordPress Native Update System**
