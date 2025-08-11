@@ -90,7 +90,15 @@ This plugin uses the **official Shiprocket API** with secure API key authenticat
 
 ## 📝 **Changelog**
 
-### v1.0.4 (Latest)
+### v1.0.5 (Latest)
+* ✨ **NEW:** Comprehensive API setup guide on settings page
+* 🔗 **NEW:** Plugin action links for quick access to Settings, Documentation, Support
+* 📋 **NEW:** Plugin meta links for Changelog, Shiprocket Dashboard, GitHub rating
+* 🎨 **IMPROVEMENT:** Enhanced settings page with step-by-step instructions
+* 📱 **IMPROVEMENT:** Mobile-responsive help section design
+* 🚀 **ENHANCEMENT:** Better user onboarding and admin interface
+
+### v1.0.4
 * ✨ **NEW:** Modern API key authentication (replaces email/password)
 * 🔐 **Security:** Enhanced input validation and error handling
 * 🚀 **Performance:** Added intelligent caching system

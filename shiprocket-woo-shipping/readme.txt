@@ -5,7 +5,7 @@ Tags: shipping, shiprocket, woocommerce, courier, delivery, logistics, india, pi
 Requires at least: 5.0
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -114,6 +114,17 @@ If you have any questions or need assistance, please [open an issue on GitHub](h
 Contributions are welcome! Feel free to fork the [repository](https://github.com/ProgrammerNomad/shiprocket-woo-shipping) and submit pull requests.
 
 == Changelog ==
+
+= 1.0.5 =
+**UX Enhancement Update**
+* NEW: Comprehensive API setup guide directly on settings page
+* NEW: Plugin action links for quick access to Settings, Documentation, and Support
+* NEW: Plugin meta links for Changelog, Shiprocket Dashboard, and GitHub rating
+* IMPROVEMENT: Enhanced settings page with step-by-step API key instructions
+* IMPROVEMENT: Better user onboarding with visual help sections
+* ENHANCEMENT: Mobile-responsive help section design
+* FEATURE: Direct links to Shiprocket Dashboard and GitHub resources
+* OPTIMIZATION: Improved admin interface styling and user experience
 
 = 1.0.4 =
 **Major Update: Modern API Integration**
