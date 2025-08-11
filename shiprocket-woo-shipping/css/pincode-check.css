@@ -1,0 +1,192 @@
+/* Shiprocket Pincode Check Styling */
+#pincode_check_form {
+    margin: 1.5rem 0;
+    padding: 1.25rem;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+    display: block !important; /* Ensure it's always visible */
+}
+
+#pincode_check_form label {
+    display: block;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+}
+
+#shiprocket_pincode_check {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #374151;
+    background-color: #ffffff;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    margin-bottom: 0.75rem;
+    box-sizing: border-box;
+}
+
+#shiprocket_pincode_check:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+#check_pincode {
+    background-color: #3b82f6;
+    color: #ffffff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#check_pincode:hover {
+    background-color: #2563eb;
+}
+
+#check_pincode:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
+
+#check_pincode:active {
+    background-color: #1d4ed8;
+}
+
+#pincode_response {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#pincode_response.success,
+#pincode_response .success {
+    background-color: #d1fae5;
+    border: 1px solid #10b981;
+    color: #065f46;
+}
+
+#pincode_response.error,
+#pincode_response .error {
+    background-color: #fee2e2;
+    border: 1px solid #ef4444;
+    color: #991b1b;
+}
+
+#pincode_response.info,
+#pincode_response .info {
+    background-color: #dbeafe;
+    border: 1px solid #3b82f6;
+    color: #1e40af;
+}
+
+/* Responsive design */
+@media (min-width: 768px) {
+    #pincode_check_form {
+        display: flex !important;
+        align-items: end;
+        gap: 0.75rem;
+        padding: 1.5rem;
+    }
+    
+    #pincode_check_form label {
+        margin-bottom: 0;
+        white-space: nowrap;
+        align-self: center;
+        min-width: fit-content;
+    }
+    
+    #shiprocket_pincode_check {
+        margin-bottom: 0;
+        flex: 1;
+        min-width: 0;
+    }
+    
+    #check_pincode {
+        width: auto;
+        min-width: 140px;
+        flex-shrink: 0;
+    }
+}
+
+/* Large screens */
+@media (min-width: 1024px) {
+    #pincode_check_form {
+        margin: 2rem 0;
+        padding: 1.5rem 2rem;
+    }
+}
+
+/* Animation for the response */
+#pincode_response {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+#pincode_response.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Loading state */
+#check_pincode.loading {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+}
+
+#check_pincode.loading:hover {
+    background-color: #9ca3af;
+}
+
+/* Force visibility on all devices */
+#pincode_check_form,
+#pincode_response {
+    visibility: visible !important;
+    display: block !important;
+}
+
+/* Ensure compatibility with theme CSS */
+.woocommerce div.product #pincode_check_form {
+    display: block !important;
+    margin: 1.5rem 0 !important;
+}
+
+/* Mobile specific adjustments */
+@media (max-width: 767px) {
+    #pincode_check_form {
+        margin: 1rem 0 !important;
+        padding: 1rem !important;
+    }
+    
+    #pincode_check_form label {
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    #shiprocket_pincode_check {
+        padding: 0.875rem;
+        font-size: 1rem;
+    }
+    
+    #check_pincode {
+        padding: 0.875rem 1rem;
+        font-size: 0.9rem;
+    }
+}

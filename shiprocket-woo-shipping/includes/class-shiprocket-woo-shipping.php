@@ -211,11 +211,16 @@ function woo_shiprocket_shipping_enqueue_scripts() {
 add_action( 'wp_enqueue_scripts', 'woo_shiprocket_shipping_enqueue_scripts' ); // Enqueue on frontend
 
 /**
- * Enqueue custom CSS for cart and checkout pages.
+ * Enqueue custom CSS for cart, checkout, and product pages.
  */
 function woo_shiprocket_enqueue_custom_css() {
-    if ( is_cart() || is_checkout() ) {
+    if ( is_cart() || is_checkout() || is_product() ) {
         wp_enqueue_style( 'woo-shiprocket-custom-css', plugins_url( '../css/woo-shiprocket-custom.css', __FILE__ ), array(), '1.0.0' );
+        
+        // Enqueue pincode check CSS on product pages
+        if ( is_product() ) {
+            wp_enqueue_style( 'woo-shiprocket-pincode-css', plugins_url( '../css/pincode-check.css', __FILE__ ), array(), '1.0.0' );
+        }
     }
 }
 add_action( 'wp_enqueue_scripts', 'woo_shiprocket_enqueue_custom_css' );

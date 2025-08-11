@@ -18,6 +18,13 @@ add_action('woocommerce_single_product_summary', 'show_shiprocket_pincode_check'
  */
 function show_shiprocket_pincode_check()
 {
+    // Prevent multiple calls on the same page
+    static $pincode_form_displayed = false;
+    if ($pincode_form_displayed) {
+        return;
+    }
+    $pincode_form_displayed = true;
+    
     global $product;
 
     $settings = get_option('woocommerce_woo_shiprocket_shipping_settings');
@@ -28,48 +35,102 @@ function show_shiprocket_pincode_check()
     }
     ?>
     <div id="pincode_check_form">
+        <label for="shiprocket_pincode_check"><?php _e('Check Pincode Serviceability:', 'shiprocket-woo-shipping'); ?></label>
         <input type="text" id="shiprocket_pincode_check" name="shiprocket_pincode_check" value=""
-            placeholder="Enter Pincode">
+            placeholder="<?php esc_attr_e('Enter your pincode', 'shiprocket-woo-shipping'); ?>" maxlength="6">
 
-        <button id="check_pincode" onClick="checkPincode_Shiprocket_Manual()"> Check Pincode </button>
+        <button id="check_pincode" type="button" onClick="checkPincode_Shiprocket_Manual()"> 
+            <?php _e('Check Pincode', 'shiprocket-woo-shipping'); ?>
+        </button>
     </div>
     <div id="pincode_response"></div>
     <script>
 
         function checkPincode_Shiprocket_Manual() {
             var pincode = document.getElementById("shiprocket_pincode_check").value;
+            var responseDiv = document.getElementById("pincode_response");
+            var checkButton = document.getElementById("check_pincode");
+            
             if (pincode == '') {
-                jQuery('#pincode_response').text("This pincode field is required!")
-            } else {
-                // Set the pincode in localStorage
-                localStorage.setItem('shiprocket_pincode', pincode);
-
-                ajaxurl = '<?php echo esc_url(admin_url('admin-ajax.php')); ?>'; // Get AJAX URL
-
-                var data = {
-                    'action': 'frontend_action_without_file',
-                    'delivery_postcode': pincode,
-                    'product_id': <?php echo esc_html($product->get_id()); ?>,
-                };
-
-                jQuery.ajax({
-                    url: ajaxurl,
-                    type: 'POST',
-                    data: data,
-                    success: function (response) {
-
-                        var tempDiv = document.createElement('div');
-                        tempDiv.innerHTML = response; // htmlString is the response from the AJAX request
-
-                        response = tempDiv.textContent || tempDiv.innerText;
-
-                        jQuery('#pincode_response').html(response); // Display the response
-                        // Set the response message in localStorage
-                        localStorage.setItem('shiprocket_pincode_response', response);
-                    }
-                });
+                responseDiv.innerHTML = '<div class="error"><?php _e("Please enter a pincode", "shiprocket-woo-shipping"); ?></div>';
+                responseDiv.className = 'show';
+                return;
             }
+            
+            // Validate pincode format (6 digits)
+            if (!/^\d{6}$/.test(pincode)) {
+                responseDiv.innerHTML = '<div class="error"><?php _e("Please enter a valid 6-digit pincode", "shiprocket-woo-shipping"); ?></div>';
+                responseDiv.className = 'show';
+                return;
+            }
+            
+            // Show loading state
+            checkButton.innerHTML = '<?php _e("Checking...", "shiprocket-woo-shipping"); ?>';
+            checkButton.classList.add('loading');
+            checkButton.disabled = true;
+            responseDiv.innerHTML = '<div class="info"><?php _e("Checking pincode serviceability...", "shiprocket-woo-shipping"); ?></div>';
+            responseDiv.className = 'show';
+            
+            // Set the pincode in localStorage
+            localStorage.setItem('shiprocket_pincode', pincode);
+
+            ajaxurl = '<?php echo esc_url(admin_url('admin-ajax.php')); ?>'; // Get AJAX URL
+
+            var data = {
+                'action': 'frontend_action_without_file',
+                'delivery_postcode': pincode,
+                'product_id': <?php echo esc_html($product->get_id()); ?>,
+            };
+
+            jQuery.ajax({
+                url: ajaxurl,
+                type: 'POST',
+                data: data,
+                success: function (response) {
+                    // Check if response contains error messages
+                    var isError = response.toLowerCase().includes('no courier') || 
+                                 response.toLowerCase().includes('not available') || 
+                                 response.toLowerCase().includes('not serviceable') ||
+                                 response.toLowerCase().includes('error');
+                    
+                    var isSuccess = response.toLowerCase().includes('available') || 
+                                   response.toLowerCase().includes('serviceable') ||
+                                   response.toLowerCase().includes('delivery');
+                    
+                    var responseClass = isError ? 'error' : (isSuccess ? 'success' : 'info');
+                    
+                    // Display the response with proper styling, keeping HTML formatting
+                    responseDiv.innerHTML = '<div class="' + responseClass + '">' + response + '</div>';
+                    responseDiv.className = 'show';
+                    
+                    // Set the response message in localStorage (keep HTML for storage)
+                    localStorage.setItem('shiprocket_pincode_response_html', response);
+                    
+                    // Also store plain text version for fallback
+                    var tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = response;
+                    var plainTextResponse = tempDiv.textContent || tempDiv.innerText;
+                    localStorage.setItem('shiprocket_pincode_response', plainTextResponse);
+                },
+                error: function() {
+                    responseDiv.innerHTML = '<div class="error"><?php _e("Error checking pincode. Please try again.", "shiprocket-woo-shipping"); ?></div>';
+                    responseDiv.className = 'show';
+                },
+                complete: function() {
+                    // Reset button state
+                    checkButton.innerHTML = '<?php _e("Check Pincode", "shiprocket-woo-shipping"); ?>';
+                    checkButton.classList.remove('loading');
+                    checkButton.disabled = false;
+                }
+            });
         }
+
+        // Allow Enter key to trigger the check
+        document.getElementById("shiprocket_pincode_check").addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPincode_Shiprocket_Manual();
+            }
+        });
 
         // Check if a pincode is saved in localStorage and pre-fill the input field
         var savedPincode = localStorage.getItem('shiprocket_pincode');
@@ -78,9 +139,27 @@ function show_shiprocket_pincode_check()
         }
 
         // Check if a pincode response is saved in localStorage and display the message
+        var savedResponseHtml = localStorage.getItem('shiprocket_pincode_response_html');
         var savedResponse = localStorage.getItem('shiprocket_pincode_response');
-        if (savedResponse) {
-            jQuery('#pincode_response').html(savedResponse);
+        
+        if (savedResponseHtml || savedResponse) {
+            var responseDiv = document.getElementById("pincode_response");
+            var displayResponse = savedResponseHtml || savedResponse;
+            
+            // Check if response contains error messages
+            var isError = displayResponse.toLowerCase().includes('no courier') || 
+                         displayResponse.toLowerCase().includes('not available') || 
+                         displayResponse.toLowerCase().includes('not serviceable') ||
+                         displayResponse.toLowerCase().includes('error');
+            
+            var isSuccess = displayResponse.toLowerCase().includes('available') || 
+                           displayResponse.toLowerCase().includes('serviceable') ||
+                           displayResponse.toLowerCase().includes('delivery');
+            
+            var responseClass = isError ? 'error' : (isSuccess ? 'success' : 'info');
+            
+            responseDiv.innerHTML = '<div class="' + responseClass + '">' + displayResponse + '</div>';
+            responseDiv.className = 'show';
         }
     </script>
     <?php
