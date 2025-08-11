@@ -4,8 +4,8 @@
   "details_url": "https://github.com/ProgrammerNomad/shiprocket-woo-shipping/releases/tag/v1.0.5",
   "sections": {
     "description": "Shiprocket WooCommerce Integration provides real-time shipping rates and pincode serviceability check for your WooCommerce store using the official Shiprocket API.",
-    "changelog": "<h4>Version 1.0.5</h4><ul><li>Added WordPress native update checker for automatic plugin updates</li><li>Enhanced settings page with API help and documentation</li><li>Improved user experience with quick action links</li><li>Better error handling and API response validation</li></ul><h4>Version 1.0.4</h4><ul><li>Updated to official Shiprocket API with API key authentication</li><li>Enhanced security by removing deprecated email/password authentication</li><li>Improved caching mechanism for better performance</li><li>Added comprehensive error handling and validation</li></ul>",
-    "commit_version": "a4986f84ce31d67a39921077f7d70e68722eaa32"
+    "changelog": "<h4>Version 1.0.5</h4><ul><li>Enhanced plugin functionality and performance improvements</li><li>Updated to latest Shiprocket API standards</li><li>Improved error handling and user experience</li><li>Better caching mechanism for optimal performance</li></ul><h4>Previous Versions</h4><ul><li>See full changelog on GitHub releases page</li></ul>",
+    "commit_version": "35e58a7df14f49d7fcd13e89c378d2cda2adf3d1"
   },
   "banners": {
     "low": "https://raw.githubusercontent.com/ProgrammerNomad/shiprocket-woo-shipping/main/assets/banner-772x250.png",
@@ -14,6 +14,6 @@
   "tested": "6.4",
   "requires_php": "7.4",
   "requires": "5.0",
-  "last_updated": "2024-01-20 10:00:00",
-  "upgrade_notice": "Important update: Added WordPress native update checker for automatic plugin updates and enhanced API help section."
+  "last_updated": "2025-08-11 11:41:57",
+  "upgrade_notice": "Important update: Version 1.0.5 includes enhanced functionality and improved performance. Update recommended for all users."
 }
