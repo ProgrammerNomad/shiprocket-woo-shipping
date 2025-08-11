@@ -5,7 +5,7 @@
   "sections": {
     "description": "Shiprocket WooCommerce Integration provides real-time shipping rates and pincode serviceability check for your WooCommerce store using the official Shiprocket API.",
     "changelog": "<h4>Version 1.0.3</h4><ul><li>Enhanced plugin functionality and performance improvements</li><li>Updated to latest Shiprocket API standards</li><li>Improved error handling and user experience</li><li>Better caching mechanism for optimal performance</li></ul><h4>Previous Versions</h4><ul><li>See full changelog on GitHub releases page</li></ul>",
-    "commit_version": "f1a82a4c69f10c5f1550ad96173c4debec3f6558"
+    "commit_version": "8747faefe9d49c6af9ead4050a14145ab9229c5f"
   },
   "banners": {
     "low": "https://raw.githubusercontent.com/ProgrammerNomad/shiprocket-woo-shipping/main/assets/banner-772x250.png",
@@ -14,6 +14,6 @@
   "tested": "6.4",
   "requires_php": "7.4",
   "requires": "5.0",
-  "last_updated": "2025-08-11 13:45:53",
+  "last_updated": "2025-08-11 13:50:42",
   "upgrade_notice": "Important update: Version 1.0.3 includes enhanced functionality and improved performance. Update recommended for all users."
 }
