@@ -9,9 +9,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Hook into multiple locations to ensure pincode check appears in all themes
-add_action('woocommerce_single_product_summary', 'show_shiprocket_pincode_check', 35); // After add to cart
-add_action('woocommerce_after_single_product_summary', 'show_shiprocket_pincode_check_fallback', 5); // Fallback position
+add_action('woocommerce_single_product_summary', 'show_shiprocket_pincode_check', 20);
 
 /**
  * Show an option to check serviceability to a pincode on the product page.
@@ -22,176 +20,70 @@ function show_shiprocket_pincode_check()
 {
     global $product;
 
-    // Ensure we're on a product page and have a product
-    if (!is_product() || !$product || !is_a($product, 'WC_Product')) {
-        return;
-    }
-
     $settings = get_option('woocommerce_woo_shiprocket_shipping_settings');
 
     // Check if the "Show Pincode Check" option is enabled in the settings
     if (!isset($settings['show_pincode_check']) || $settings['show_pincode_check'] !== 'yes') {
         return; // Exit if the option is not enabled
     }
-
-    // Mark that pincode check has been displayed to prevent duplicates
-    static $displayed = false;
-    if ($displayed) {
-        return;
-    }
-    $displayed = true;
-    
-    // Enqueue the pincode check CSS
-    wp_enqueue_style('shiprocket-pincode-check', plugin_dir_url(dirname(__FILE__)) . 'css/pincode-check.css', array(), '1.0.12');
     ?>
-    <div class="tostishop-pincode-check">
-        <div class="pincode-check-container">
-            <div class="pincode-delivery-header">
-                <h4 style="margin: 0; font-size: 16px; font-weight: 600; color: #343a40;">
-                    <?php _e('Delivery Options', 'shiprocket-woo-shipping'); ?>
-                </h4>
-                <svg class="pincode-delivery-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
-                </svg>
-            </div>
-            <form class="pincode-form" autocomplete="off" onsubmit="return false;">
-                <input type="text" 
-                       id="shiprocket_pincode_check" 
-                       name="shiprocket_pincode_check" 
-                       value=""
-                       placeholder="<?php esc_attr_e('Enter pincode', 'shiprocket-woo-shipping'); ?>"
-                       class="pincode-input"
-                       maxlength="6"
-                       pattern="[0-9]{6}">
-                <button type="button" 
-                        id="check_pincode" 
-                        class="pincode-check-btn" 
-                        onclick="checkPincode_Shiprocket_Manual()">
-                    <span><?php _e('Check', 'shiprocket-woo-shipping'); ?></span>
-                </button>
-            </form>
-            <p class="pincode-help-text">
-                <?php _e('Please enter PIN code to check delivery time & Pay on Delivery Availability', 'shiprocket-woo-shipping'); ?>
-            </p>
-            <div id="pincode_response" class="pincode-response" style="display: none;"></div>
-        </div>
+    <div id="pincode_check_form">
+        <input type="text" id="shiprocket_pincode_check" name="shiprocket_pincode_check" value=""
+            placeholder="Enter Pincode">
+
+        <button id="check_pincode" onClick="checkPincode_Shiprocket_Manual()"> Check Pincode </button>
     </div>
+    <div id="pincode_response"></div>
     <script>
+
         function checkPincode_Shiprocket_Manual() {
-            var pincode = document.getElementById("shiprocket_pincode_check").value.trim();
-            var checkBtn = document.getElementById("check_pincode");
-            var responseDiv = document.getElementById("pincode_response");
-            
-            // Validate pincode
-            if (pincode === '') {
-                showPincodeResponse("This pincode field is required!", "error");
-                return;
-            }
-            
-            if (!/^[0-9]{6}$/.test(pincode)) {
-                showPincodeResponse("Please enter a valid 6-digit pincode!", "error");
-                return;
-            }
-            
-            // Set loading state
-            checkBtn.classList.add('loading');
-            checkBtn.disabled = true;
-            responseDiv.style.display = 'none';
-            
-            // Set the pincode in localStorage
-            localStorage.setItem('shiprocket_pincode', pincode);
+            var pincode = document.getElementById("shiprocket_pincode_check").value;
+            if (pincode == '') {
+                jQuery('#pincode_response').text("This pincode field is required!")
+            } else {
+                // Set the pincode in localStorage
+                localStorage.setItem('shiprocket_pincode', pincode);
 
-            ajaxurl = '<?php echo esc_url(admin_url('admin-ajax.php')); ?>'; // Get AJAX URL
+                ajaxurl = '<?php echo esc_url(admin_url('admin-ajax.php')); ?>'; // Get AJAX URL
 
-            var data = {
-                'action': 'frontend_action_without_file',
-                'delivery_postcode': pincode,
-                'product_id': <?php echo esc_html($product->get_id()); ?>,
-            };
+                var data = {
+                    'action': 'frontend_action_without_file',
+                    'delivery_postcode': pincode,
+                    'product_id': <?php echo esc_html($product->get_id()); ?>,
+                };
 
-            jQuery.ajax({
-                url: ajaxurl,
-                type: 'POST',
-                data: data,
-                timeout: 15000, // 15 seconds timeout
-                success: function (response) {
-                    var tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = response;
-                    response = tempDiv.textContent || tempDiv.innerText;
+                jQuery.ajax({
+                    url: ajaxurl,
+                    type: 'POST',
+                    data: data,
+                    success: function (response) {
 
-                    showPincodeResponse(response, "success");
-                    // Set the response message in localStorage
-                    localStorage.setItem('shiprocket_pincode_response', response);
-                },
-                error: function(xhr, status, error) {
-                    var errorMsg = "Unable to check pincode. Please try again.";
-                    if (status === 'timeout') {
-                        errorMsg = "Request timed out. Please try again.";
+                        var tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = response; // htmlString is the response from the AJAX request
+
+                        response = tempDiv.textContent || tempDiv.innerText;
+
+                        jQuery('#pincode_response').html(response); // Display the response
+                        // Set the response message in localStorage
+                        localStorage.setItem('shiprocket_pincode_response', response);
                     }
-                    showPincodeResponse(errorMsg, "error");
-                },
-                complete: function() {
-                    // Remove loading state
-                    checkBtn.classList.remove('loading');
-                    checkBtn.disabled = false;
-                }
-            });
-        }
-        
-        function showPincodeResponse(message, type) {
-            var responseDiv = document.getElementById("pincode_response");
-            responseDiv.innerHTML = message;
-            responseDiv.className = "pincode-response " + type;
-            responseDiv.style.display = 'block';
-        }
-        
-        // Initialize pincode check on page load
-        jQuery(document).ready(function($) {
-            // Check if a pincode is saved in localStorage and pre-fill the input field
-            var savedPincode = localStorage.getItem('shiprocket_pincode');
-            if (savedPincode) {
-                document.getElementById("shiprocket_pincode_check").value = savedPincode;
+                });
             }
+        }
 
-            // Check if a pincode response is saved in localStorage and display the message
-            var savedResponse = localStorage.getItem('shiprocket_pincode_response');
-            if (savedResponse) {
-                showPincodeResponse(savedResponse, "info");
-            }
-            
-            // Add Enter key support
-            $('#shiprocket_pincode_check').on('keypress', function(e) {
-                if (e.which === 13) { // Enter key
-                    e.preventDefault();
-                    checkPincode_Shiprocket_Manual();
-                }
-            });
-            
-            // Format pincode input (only numbers, max 6 digits)
-            $('#shiprocket_pincode_check').on('input', function(e) {
-                var value = e.target.value.replace(/[^0-9]/g, '');
-                if (value.length > 6) {
-                    value = value.substring(0, 6);
-                }
-                e.target.value = value;
-            });
-        });
+        // Check if a pincode is saved in localStorage and pre-fill the input field
+        var savedPincode = localStorage.getItem('shiprocket_pincode');
+        if (savedPincode) {
+            document.getElementById("shiprocket_pincode_check").value = savedPincode;
+        }
+
+        // Check if a pincode response is saved in localStorage and display the message
+        var savedResponse = localStorage.getItem('shiprocket_pincode_response');
+        if (savedResponse) {
+            jQuery('#pincode_response').html(savedResponse);
+        }
     </script>
     <?php
-}
-
-/**
- * Fallback function to show pincode check if not already displayed
- * This ensures compatibility with all themes
- *
- * @return void
- */
-function show_shiprocket_pincode_check_fallback()
-{
-    // Only show if we're on a single product page
-    if (is_product()) {
-        show_shiprocket_pincode_check();
-    }
 }
 
 add_action('wp_ajax_frontend_action_without_file', 'shiprocket_pincode_check_ajax_handler');
@@ -221,36 +113,19 @@ function shiprocket_pincode_check_ajax_handler()
 
     $weight = floatval($product->get_weight()); // Get the product weight
 
-    // Get the Shiprocket settings
+    // Get the Shiprocket token from settings
     $settings = get_option('woocommerce_woo_shiprocket_shipping_settings');
-    
-    // Check if we have API user credentials
-    $api_user_email = isset($settings['api_user_email']) ? $settings['api_user_email'] : '';
-    $api_user_password = isset($settings['api_user_password']) ? $settings['api_user_password'] : '';
-    $pickup_postcode = isset($settings['pickup_postcode']) ? $settings['pickup_postcode'] : '';
+    $token = isset($settings['token']) ? $settings['token'] : '';
 
-    // Fallback to WooCommerce store postcode if not set in settings
-    if (empty($pickup_postcode)) {
-        $pickup_postcode = get_option('woocommerce_store_postcode');
-        
-        // Additional fallback to base location
-        if (empty($pickup_postcode)) {
-            $pickup_postcode = WC()->countries->get_base_postcode();
-        }
-    }
-
-    if (!$api_user_email || !$api_user_password || !$pickup_postcode) {
-        wp_send_json_error(array('message' => __('Shiprocket API credentials or pickup postcode not found.', 'shiprocket-woo-shipping')));
-    }
-
-    // Get authentication token
-    $auth_token = woo_shiprocket_get_auth_token();
-    if (!$auth_token) {
-        wp_send_json_error(array('message' => __('Failed to authenticate with Shiprocket API.', 'shiprocket-woo-shipping')));
+    if (!$token) {
+        wp_send_json_error(array('message' => __('Shiprocket token not found.', 'shiprocket-woo-shipping')));
     }
 
     // Shiprocket API endpoint URL
     $endpoint_url = 'https://apiv2.shiprocket.in/v1/courier/ratingserviceability';
+
+    // Get the store's postcode from WooCommerce settings
+    $pickup_postcode = get_option('woocommerce_store_postcode');
 
     // Shipping data 
     $cod = '0';
@@ -281,19 +156,18 @@ function shiprocket_pincode_check_ajax_handler()
         'length' => $length,
         'breadth' => $breadth,
         'height' => $height,
+
     ));
 
     // Construct the full URL with the query string
     $full_url = $endpoint_url . '?' . $query_string;
 
-    // Build the request arguments with Bearer token authentication
+    // Build the request arguments
     $args = array(
         'headers' => array(
-            'Authorization' => 'Bearer ' . $auth_token,
-            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . $token,
         ),
         'method' => 'GET',
-        'timeout' => 30,
     );
 
     // Make the API request

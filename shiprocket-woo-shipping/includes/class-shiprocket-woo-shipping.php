@@ -51,33 +51,33 @@ function woo_shiprocket_shipping_init() {
 			 * @return void
 			 */
 			public function init_form_fields() {
-				   $this->form_fields = array(
-					   'api_user_email' => array(
-						   'title'       => __( 'Shiprocket API User Email', 'shiprocket-woo-shipping' ),
-						   'type'        => 'text',
-						   'description' => __( 'Enter your Shiprocket API User email (created from Settings → API → Add New API User).', 'shiprocket-woo-shipping' ),
-						   'default'     => '',
-						   'desc_tip'    => true,
-					   ),
-					   'api_user_password' => array(
-						   'title'       => __( 'Shiprocket API User Password', 'shiprocket-woo-shipping' ),
-						   'type'        => 'password',
-						   'description' => __( 'Enter your Shiprocket API User password (sent to your registered email after creating API user).', 'shiprocket-woo-shipping' ),
-						   'default'     => '',
-						   'desc_tip'    => true,
-					   ),
-					'pickup_postcode' => array(
-						'title'       => __( 'Pickup Postcode', 'shiprocket-woo-shipping' ),
+				$this->form_fields = array(
+					'email' => array(
+						'title'       => __( 'Shiprocket Email', 'shiprocket-woo-shipping' ),
 						'type'        => 'text',
-						'description' => __( 'Your warehouse/pickup location postcode. Auto-filled from WooCommerce store address.', 'shiprocket-woo-shipping' ),
-						'default'     => $this->get_shop_postcode(),
-						'desc_tip'    => true,
+						'description' => __( 'Enter your Shiprocket Email.', 'shiprocket-woo-shipping' ),
+						'default'     => '',
+					),
+					'password' => array(
+						'title'       => __( 'Shiprocket Password', 'shiprocket-woo-shipping' ),
+						'type'        => 'password',
+						'description' => __( 'Enter your Shiprocket Password.', 'shiprocket-woo-shipping' ),
+						'default'     => '',
+					),
+					'token' => array(
+						'title'       => __( 'Shiprocket Token', 'shiprocket-woo-shipping' ),
+						'type'        => 'textarea',
+						'description' => __( 'Shiprocket Token (generated on save)', 'shiprocket-woo-shipping' ),
+						'default'     => '',
+						'custom_attributes' => array(
+							'readonly' => 'readonly'
+						),
 					),
 					'show_pincode_check' => array(
 						'title'       => __( 'Show Pincode Check', 'shiprocket-woo-shipping' ),
 						'type'        => 'checkbox',
 						'label'       => __( 'Enable pincode serviceability check on product pages', 'shiprocket-woo-shipping' ),
-						'default'     => 'yes',
+						'default'     => 'no',
 					),
 					'show_top_courier' => array(
 						'title'       => __( 'Show Top Courier', 'shiprocket-woo-shipping' ),
@@ -85,181 +85,86 @@ function woo_shiprocket_shipping_init() {
 						'label'       => __( 'Show only top rated 5 courier providers.', 'shiprocket-woo-shipping' ),
 						'default'     => 'yes',
 					),
-					'cache_duration' => array(
-						'title'       => __( 'Cache Duration (minutes)', 'shiprocket-woo-shipping' ),
-						'type'        => 'number',
-						'description' => __( 'How long to cache shipping rates to improve performance.', 'shiprocket-woo-shipping' ),
-						'default'     => '10',
-						'desc_tip'    => true,
-					),
 				);
 			}
 
 			/**
-			 * Generate settings HTML including help information.
+			 * Process admin options (save settings).
 			 *
-			 * @return void
+			 * @return bool Was anything saved?
 			 */
-			public function generate_settings_html( $form_fields = array(), $echo = true ) {
-				// Generate the standard settings form
-				$html = parent::generate_settings_html( $form_fields, false );
-				
-				// Add help information after the form
-				$html .= $this->get_api_help_section();
-				
-				if ( $echo ) {
-					echo $html;
+			public function process_admin_options() {
+				// Get the entered email and password
+				$email = sanitize_text_field( $_POST['woocommerce_woo_shiprocket_shipping_email'] );
+				$password = sanitize_text_field( $_POST['woocommerce_woo_shiprocket_shipping_password'] );
+
+				// Make API call to Shiprocket to generate token with raw JSON body
+				$response = wp_remote_post( 'https://apiv2.shiprocket.in/v1/external/auth/login', array(
+					'headers' => array( 'Content-Type' => 'application/json' ), // Set Content-Type header
+					'body'    => wp_json_encode( array( // Encode body as JSON string
+						'email'    => $email,
+						'password' => $password,
+					) ),
+				) );
+
+				if ( is_wp_error( $response ) ) {
+					// Handle API error (e.g., display a notice)
+					/* translators: %s: The error message from the Shiprocket API. */
+					WC_Admin_Settings::add_error( sprintf( __( 'Shiprocket API Error: %s', 'shiprocket-woo-shipping' ), $response->get_error_message() ) );
+					return false;
 				}
-				
-				return $html;
+
+				$body = json_decode( wp_remote_retrieve_body( $response ) );
+				$code = wp_remote_retrieve_response_code( $response ); // Get the HTTP status code
+
+				// Check if the status code is 403 (Forbidden)
+				if ( $code == 403 ) {
+					$error_message = __( 'Invalid Shiprocket email or password.', 'shiprocket-woo-shipping' );
+					WC_Admin_Settings::add_error( $error_message );
+					return false; 
+				} else if ( ! isset( $body->token ) ) { // Check for other token generation errors
+					$error_message = __( 'Failed to generate Shiprocket token.', 'shiprocket-woo-shipping' );
+					WC_Admin_Settings::add_error( $error_message );
+					return false; 
+				}
+
+				// Update the token field in the settings
+				$_POST['woocommerce_woo_shiprocket_shipping_token'] = $body->token; 
+
+				// Continue with the default saving process
+				return parent::process_admin_options();
 			}
+
 
 			/**
-			 * Get API help section HTML.
+			 * Calculate shipping function.
 			 *
-			 * @return string Help section HTML.
+			 * @access public
+			 * @param array $package
+			 * @return void
 			 */
-		private function get_api_help_section() {
-			ob_start();
-			?>
-			<div class="shiprocket-api-help" style="margin-top: 20px; padding: 20px; background: #f8f9fa; border: 1px solid #e1e5e9; border-radius: 6px;">
-				<h3 style="margin-top: 0; color: #1d2327;">🚀 <?php _e( 'Setting Up Shiprocket API User', 'shiprocket-woo-shipping' ); ?></h3>
-				
-				<div style="display: grid; gap: 15px;">
-					<div>
-						<h4 style="margin: 0 0 8px 0; color: #135e96;">📋 <?php _e( 'Step-by-Step API User Creation:', 'shiprocket-woo-shipping' ); ?></h4>
-						<ol style="margin: 8px 0 0 20px;">
-							<li><?php _e( 'Login to your', 'shiprocket-woo-shipping' ); ?> <a href="https://app.shiprocket.in/dashboard" target="_blank" style="color: #2271b1; text-decoration: none;"><?php _e( 'Shiprocket Dashboard', 'shiprocket-woo-shipping' ); ?> ↗</a></li>
-							<li><?php _e( 'From the left-hand menu, go to:', 'shiprocket-woo-shipping' ); ?> <strong><?php _e( 'Settings → API → Add New API User', 'shiprocket-woo-shipping' ); ?></strong></li>
-							<li><?php _e( 'Click on', 'shiprocket-woo-shipping' ); ?> <strong><?php _e( '"Create API User"', 'shiprocket-woo-shipping' ); ?></strong></li>
-							<li><?php _e( 'Enter a unique email address (different from your main Shiprocket login)', 'shiprocket-woo-shipping' ); ?></li>
-							<li><?php _e( 'Select the relevant API modules you want to access', 'shiprocket-woo-shipping' ); ?></li>
-							<li><?php _e( 'Click', 'shiprocket-woo-shipping' ); ?> <strong><?php _e( '"Create User"', 'shiprocket-woo-shipping' ); ?></strong></li>
-							<li><?php _e( 'The password will be sent to your registered email address', 'shiprocket-woo-shipping' ); ?></li>
-							<li><?php _e( 'Paste the API user email and password in the fields above', 'shiprocket-woo-shipping' ); ?></li>
-							<li><?php _e( 'Click', 'shiprocket-woo-shipping' ); ?> <strong><?php _e( 'Save changes', 'shiprocket-woo-shipping' ); ?></strong> <?php _e( '(plugin will validate your credentials automatically)', 'shiprocket-woo-shipping' ); ?></li>
-						</ol>
-					</div>
+			public function calculate_shipping( $package = array() ) {
+                $pincode = $package['destination']['postcode'];
+                $weight = WC()->cart->get_cart_contents_weight(); 
+				$Dimensions = $this->GetLengthBreadthHeight($package);
+				$total_amount = WC()->cart->get_cart_contents_total();
 
-					<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px;">
-						<div style="padding: 15px; background: #fff; border: 1px solid #ddd; border-radius: 4px;">
-							<h4 style="margin: 0 0 8px 0; color: #d63384;">🚨 <?php _e( 'Important Notes:', 'shiprocket-woo-shipping' ); ?></h4>
-							<ul style="margin: 8px 0 0 20px; font-size: 14px;">
-								<li><?php _e( 'You need an active Shiprocket account', 'shiprocket-woo-shipping' ); ?></li>
-								<li><?php _e( 'API User email must be different from your main login', 'shiprocket-woo-shipping' ); ?></li>
-								<li><?php _e( 'Password is sent to your registered email (not API user email)', 'shiprocket-woo-shipping' ); ?></li>
-								<li><?php _e( 'Keep your API credentials secure and private', 'shiprocket-woo-shipping' ); ?></li>
-							</ul>
-						</div>
+                // Make API call to Shiprocket to get rates for the pincode and weight
+                $rates = woo_shiprocket_get_rates( $pincode, $weight, $Dimensions, $total_amount ); // This function will be in the new file
 
-						<div style="padding: 15px; background: #fff; border: 1px solid #ddd; border-radius: 4px;">
-							<h4 style="margin: 0 0 8px 0; color: #198754;">✅ <?php _e( 'Features Enabled:', 'shiprocket-woo-shipping' ); ?></h4>
-							<ul style="margin: 8px 0 0 20px; font-size: 14px;">
-								<li><?php _e( 'Real-time shipping rates at checkout', 'shiprocket-woo-shipping' ); ?></li>
-								<li><?php _e( 'Pincode serviceability check on products', 'shiprocket-woo-shipping' ); ?></li>
-								<li><?php _e( 'Auto-pickup location from store settings', 'shiprocket-woo-shipping' ); ?></li>
-								<li><?php _e( 'Intelligent caching for better performance', 'shiprocket-woo-shipping' ); ?></li>
-							</ul>
-						</div>
-					</div>
-
-					<div style="padding: 15px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 4px; margin-top: 10px;">
-						<h4 style="margin: 0 0 8px 0; color: #856404;">💡 <?php _e( 'Need Help?', 'shiprocket-woo-shipping' ); ?></h4>
-						<p style="margin: 8px 0; font-size: 14px;">
-							<?php _e( 'Having trouble? Check our', 'shiprocket-woo-shipping' ); ?>
-							<a href="https://github.com/ProgrammerNomad/shiprocket-woo-shipping/wiki" target="_blank" style="color: #856404; font-weight: 600;"><?php _e( 'Documentation', 'shiprocket-woo-shipping' ); ?> ↗</a>
-							<?php _e( 'or', 'shiprocket-woo-shipping' ); ?>
-							<a href="https://github.com/ProgrammerNomad/shiprocket-woo-shipping/issues" target="_blank" style="color: #856404; font-weight: 600;"><?php _e( 'Report an Issue', 'shiprocket-woo-shipping' ); ?> ↗</a>
-							<?php _e( '| Official API Docs:', 'shiprocket-woo-shipping' ); ?>
-							<a href="https://apidocs.shiprocket.in" target="_blank" style="color: #856404; font-weight: 600;"><?php _e( 'Shiprocket API', 'shiprocket-woo-shipping' ); ?> ↗</a>
-						</p>
-					</div>
-					<div style="text-align: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd;">
-						<p style="margin: 0; font-size: 14px; color: #6c757d;">
-							<?php _e( 'Made with', 'shiprocket-woo-shipping' ); ?> ❤️ <?php _e( 'for the WooCommerce community', 'shiprocket-woo-shipping' ); ?> |
-							<a href="https://github.com/ProgrammerNomad/shiprocket-woo-shipping" target="_blank" style="color: #6c757d;"><?php _e( 'View on GitHub', 'shiprocket-woo-shipping' ); ?> ↗</a>
-						</p>
-					</div>
-				</div>
-			</div>
-			<?php
-			return ob_get_clean();
-		}			/**
-			 * Get shop postcode from WooCommerce settings.
-			 *
-			 * @return string Shop postcode.
-			 */
-			private function get_shop_postcode() {
-				$postcode = get_option('woocommerce_store_postcode');
-				
-				// Fallback to base location if store postcode is not set
-				if (empty($postcode)) {
-					$base_location = wc_get_base_location();
-					$postcode = WC()->countries->get_base_postcode();
-				}
-				
-				return $postcode ? $postcode : '';
+                if ( ! empty( $rates ) ) {
+                    foreach ( $rates as $rate ) {
+                        $this->add_rate( array(
+                            'id'    => $this->id . '_' . $rate['id'],
+                            'label' => $rate['name'],
+                            'cost'  => $rate['cost'], 
+                        ) );
+                    }
+                } else {
+                    // If no rates are found, display an error message
+                    wc_add_notice( __( 'No shipping rates found for your pincode.', 'shiprocket-woo-shipping' ), 'error' );
+                }
 			}
-
-		/**
-		 * Process admin options (save settings).
-		 *
-		 * @return bool Was anything saved?
-		 */
-		public function process_admin_options() {
-			return parent::process_admin_options();
-		}
-
-		/**
-		 * Display help section after settings.
-		 */
-		public function admin_options() {
-			parent::admin_options();
-		}		   /**
-			* Calculate shipping rates.
-			*
-			* @param array $package Package information.
-			*/
-		   public function calculate_shipping( $package = array() ) {
-			   $destination_postcode = $package['destination']['postcode'];
-			   $weight = 0;
-			   $total_amount = 0;
-
-		   // Calculate total weight and amount
-		   foreach ( $package['contents'] as $item_id => $values ) {
-			   $product = $values['data'];
-			   $product_weight = floatval( $product->get_weight() ?: 0 );
-			   $product_price = floatval( $product->get_price() ?: 0 );
-			   $quantity = intval( $values['quantity'] ?: 1 );
-			   
-			   $weight += $product_weight * $quantity;
-			   $total_amount += $product_price * $quantity;
-		   }
-
-		   // Get dimensions
-		   $dimensions = $this->GetLengthBreadthHeight( $package );
-
-		   // Ensure minimum weight for API compatibility
-		   if ( $weight <= 0 ) {
-			   $weight = 0.1; // Set minimum weight of 100 grams
-		   }
-
-		   // Get shipping rates
-		   $rates = woo_shiprocket_get_rates( $destination_postcode, $weight, $dimensions, $total_amount );
-
-			   if ( ! empty( $rates ) ) {
-				   foreach ( $rates as $rate ) {
-					   $this->add_rate( array(
-						   'id'    => $this->id . '_' . $rate['id'],
-						   'label' => $rate['name'],
-						   'cost'  => $rate['cost'], 
-					   ) );
-				   }
-			   } else {
-				   // If no rates are found, display an error message
-				   wc_add_notice( __( 'No shipping rates found for your pincode.', 'shiprocket-woo-shipping' ), 'error' );
-			   }
-		   }
 
 			public function GetLengthBreadthHeight ($package = array())
 			{
@@ -268,16 +173,12 @@ function woo_shiprocket_shipping_init() {
 				$height = 0;
 				foreach ($package['contents'] as $item_id => $values) {
 					$_product = $values['data'];
-					$product_length = floatval( $_product->get_length() ?: 0 );
-					$product_width = floatval( $_product->get_width() ?: 0 );
-					$product_height = floatval( $_product->get_height() ?: 0 );
-					$quantity = intval( $values['quantity'] ?: 1 );
-					
-					$length += $product_length * $quantity;
-					$breadth += $product_width * $quantity;
-					$height += $product_height * $quantity;
+					$length += $_product->get_length() * $values['quantity'];
+					$breadth += $_product->get_width() * $values['quantity'];
+					$height += $_product->get_height() * $values['quantity'];
 				}
 				return array('length' => $length, 'breadth' => $breadth, 'height' => $height);
+
 			}
            
 		} // end class WC_Shiprocket_Shipping_Method
@@ -292,43 +193,6 @@ function add_woo_shiprocket_shipping_method( $methods ) {
 }
 
 add_filter( 'woocommerce_shipping_methods', 'add_woo_shiprocket_shipping_method' );
-
-/**
- * Enqueue admin styles for settings page.
- */
-function shiprocket_woo_shipping_admin_styles( $hook ) {
-    // Only load on WooCommerce settings pages
-    if ( $hook === 'woocommerce_page_wc-settings' && isset( $_GET['section'] ) && $_GET['section'] === 'woo_shiprocket_shipping' ) {
-        // Add some inline CSS for better styling
-        $css = '
-        <style>
-        .shiprocket-api-help h3 { 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-        }
-        .shiprocket-api-help h4 { 
-            display: flex; 
-            align-items: center; 
-            gap: 6px; 
-        }
-        .shiprocket-api-help a {
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .shiprocket-api-help a:hover {
-            text-decoration: underline;
-        }
-        @media (max-width: 768px) {
-            .shiprocket-api-help > div > div:nth-child(2) {
-                grid-template-columns: 1fr;
-            }
-        }
-        </style>';
-        echo $css;
-    }
-}
-add_action( 'admin_head', 'shiprocket_woo_shipping_admin_styles' );
 
 /**
  * Enqueue JavaScript for AJAX call.
